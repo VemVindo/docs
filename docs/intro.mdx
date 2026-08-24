@@ -1,47 +1,48 @@
 ---
 sidebar_position: 1
+slug: /intro
+title: Visão geral
 ---
 
-# Tutorial Intro
+# VemVindo
 
-Let's discover **Docusaurus in less than 5 minutes**.
+O VemVindo é uma aplicação web de rastreamento de entregas voltada para
+estabelecimentos comerciais que operam com frota própria. A proposta é oferecer,
+em um modelo SaaS B2B multitenant, uma camada de acompanhamento de pedidos que o
+estabelecimento disponibiliza aos seus clientes, do momento do envio até a
+entrega final.
 
-## Getting Started
+## O problema
 
-Get started by **creating a new site**.
+Estabelecimentos que entregam com frota própria costumam não ter uma forma
+padronizada de mostrar ao cliente onde está o pedido e quando ele deve chegar. O
+acompanhamento fica disperso em ligações, mensagens manuais e planilhas, sem
+histórico consolidado nem métricas sobre o desempenho das entregas.
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+## A proposta de valor
 
-### What you'll need
+O VemVindo centraliza o acompanhamento das entregas em um único produto:
 
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+- O estabelecimento cadastra e acompanha suas entregas em um painel próprio,
+  isolado dos demais clientes da plataforma.
+- O entregador registra o andamento da entrega.
+- O destinatário acompanha o pedido por um link, sem precisar criar conta.
 
-## Generate a new site
+Além do rastreamento, a plataforma oferece dashboards com métricas de operação,
+avaliação de entregadores e um canal de comunicação para contingências.
 
-Generate a new Docusaurus site using the **classic template**.
+## Papéis
 
-The classic template will automatically be added to your project after you run the command:
+O fluxo de uma entrega no VemVindo envolve três papéis:
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+- **Quem envia** (o estabelecimento): cadastra a entrega e acompanha a operação.
+- **Quem entrega** (o entregador da frota do estabelecimento): executa e atualiza
+  o andamento da entrega.
+- **Quem recebe** (o destinatário): acompanha o pedido pelo link de rastreamento.
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+## Como navegar nesta documentação
 
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+- **Produto**: visão, escopo, funcionalidades e limites do que será construído.
+- **Arquitetura**: stack técnica, modelo multitenant, integração e segurança.
+- **Requisitos**: papéis, fluxos e requisitos funcionais e não funcionais.
+- **Gestão**: cronograma, próximos passos e atas das reuniões.

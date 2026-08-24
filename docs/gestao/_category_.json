@@ -1,0 +1,8 @@
+{
+  "label": "Gestão",
+  "position": 6,
+  "link": {
+    "type": "generated-index",
+    "description": "Cronograma, próximos passos e atas das reuniões."
+  }
+}

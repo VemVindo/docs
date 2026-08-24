@@ -1,0 +1,8 @@
+{
+  "label": "Arquitetura",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Stack técnica, modelo multitenant, integração e segurança."
+  }
+}

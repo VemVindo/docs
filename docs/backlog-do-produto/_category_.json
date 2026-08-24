@@ -1,0 +1,8 @@
+{
+  "label": "Backlog do Produto",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "Backlog de histórias de usuário extraído do User Story Mapping, separado por persona: Empresa / Cliente, Entregador e Recebedor."
+  }
+}

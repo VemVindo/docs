@@ -1,22 +1,31 @@
-# Website
+# VemVindo - Documentação
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+Documentação do VemVindo, uma aplicação web de rastreamento de entregas para
+estabelecimentos comerciais com frota própria (SaaS B2B multitenant). O produto
+tem frontend em Next.js e backend em NestJS, mantidos em repositórios separados
+da organização. Este repositório (`docs`) contém apenas a documentação, construída
+com [Docusaurus](https://docusaurus.io/).
 
-## Installation
+## Repositórios da organização
+
+- `frontend`: aplicação Next.js.
+- `backend`: aplicação NestJS.
+- `docs`: esta documentação.
+
+## Instalação
 
 ```bash
 npm install
 ```
 
-**Note**: feel free to use the package manager of your choice.
-
-## Local Development
+## Desenvolvimento local
 
 ```bash
 npm run start
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+Inicia um servidor local e abre o navegador. A maioria das alterações é refletida
+sem reiniciar o servidor.
 
 ## Build
 
@@ -24,20 +33,19 @@ This command starts a local development server and opens up a browser window. Mo
 npm run build
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+Gera o conteúdo estático no diretório `build`, que pode ser servido por qualquer
+serviço de hospedagem estática.
 
-## Deployment
-
-Using SSH:
-
-```bash
-USE_SSH=true npm run deploy
-```
-
-Not using SSH:
+## Verificação de tipos
 
 ```bash
-GIT_USER=<Your GitHub username> npm run deploy
+npm run typecheck
 ```
 
-If you are using GitHub Pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+## Deploy
+
+O deploy é feito no GitHub Pages da organização VemVindo.
+
+```bash
+GIT_USER=<seu usuário do GitHub> npm run deploy
+```

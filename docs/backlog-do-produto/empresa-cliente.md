@@ -112,7 +112,7 @@ ele entre na fila para ser atribuído a um entregador.
 
 - O formulário solicita: nome do recebedor, telefone do recebedor, endereço de entrega completo, descrição/itens do pedido e observações (opcional).
 - Endereço de entrega e contato do recebedor são obrigatórios.
-- O pedido é criado com status inicial "Pendente" e data/hora de criação.
+- O pedido é criado com status inicial "Pendente", é calculado o valor da entrega e data/hora de criação.
 - Ao concluir, o pedido aparece na lista de pedidos ativos.
 
 ### US09 — Atribuir Entrega a Entregador
@@ -146,7 +146,7 @@ eu acompanhe as entregas em andamento.
 **Critérios de aceitação:**
 
 - A lista exibe apenas pedidos com status "Finalizado" (ou "Cancelado", quando houver).
-- Cada item mostra: identificador do pedido, recebedor, entregador responsável, data/hora de conclusão e avaliação recebida (quando houver).
+- Cada item mostra: identificador do pedido, recebedor, entregador responsável, valor da entrega, data/hora de conclusão e avaliação recebida (quando houver).
 - É possível filtrar por período (data inicial e final).
 
 ### US12 — Reatribuir Entregador
@@ -188,55 +188,69 @@ um endpoint de integração **para que** meus pedidos entrem na plataforma sem d
 - Quando disponível, exibe a localização atual do entregador e a distância/tempo estimado.
 - É possível acessar o detalhe a partir das listas de pedidos ativos e finalizados.
 
-### US15 — Dashboard: Tempo Médio
+## US15 — Dashboard: Indicadores Operacionais
 
-**Como** dono do estabelecimento, **quero** ver o tempo médio de entrega no dashboard
-**para que** eu avalie a agilidade da operação.
+**Como** dono do estabelecimento, **quero** visualizar os principais indicadores operacionais no dashboard, **para que** eu possa avaliar a agilidade, o volume, a satisfação dos recebedores, o esforço logístico e o desempenho geral da operação.
 
-**Critérios de aceitação:**
+### Critérios de aceitação
 
-- O indicador considera apenas entregas finalizadas, medindo o tempo entre atribuição e conclusão.
-- O valor é exibido em unidade legível (minutos/horas) e respeita o período selecionado.
-- Quando não há entregas no período, o indicador exibe estado vazio (sem erro).
+* Todos os indicadores devem respeitar o período selecionado pelo usuário.
+* Todos os indicadores devem considerar apenas dados do estabelecimento pertencente ao dono autenticado.
+* Todos os indicadores devem considerar apenas entregas finalizadas, exceto quando especificado de outra forma.
+* O dashboard deve apresentar o tempo médio de entrega, calculado a partir do intervalo entre a atribuição e a conclusão de cada entrega finalizada.
+* Quando não houver entregas no período, o indicador de tempo médio deve apresentar estado vazio, sem gerar erro.
+* O dashboard deve apresentar o total de entregas finalizadas no período, exibido como número inteiro.
+* O dashboard deve apresentar a avaliação média das entregas avaliadas no período, considerando notas de 0 a 5 e exibindo o resultado com uma casa decimal.
+* Entregas sem avaliação não devem ser consideradas no cálculo da avaliação média.
+* O dashboard deve apresentar a distância total percorrida nas entregas finalizadas, exibida em quilômetros.
+* Quando não houver dados de distância, o indicador deve apresentar estado vazio, sem gerar erro.
+* O dashboard deve apresentar a taxa de entregas concluídas em relação ao total de entregas atribuídas ou iniciadas no período.
+* O dashboard deve apresentar a quantidade de entregas em andamento.
+* O dashboard deve apresentar a quantidade e a taxa de entregas canceladas no período.
+* O dashboard deve apresentar a quantidade de entregas por período, permitindo identificar variações no volume operacional.
+* O dashboard deve apresentar a distribuição das entregas por status, como pendente, atribuída, em andamento, concluída e cancelada.
+* O dashboard deve apresentar a quantidade de entregas realizadas por cada entregador, valor médio recebido por entrega e quanto o entregador produziu no período.
+* O dashboard deve apresentar a média de avaliações recebidas e, quando aplicável, a distribuição das notas atribuídas.
+* O dashboard deve permitir comparar os principais indicadores com períodos anteriores.
+* Todos os indicadores devem ser atualizados de acordo com os filtros selecionados pelo usuário.
+* Nenhum indicador deve apresentar dados pertencentes a outros estabelecimentos.
+* Quando não houver dados suficientes para o cálculo de um indicador, o dashboard deve apresentar um estado vazio ou uma mensagem apropriada, sem gerar erros.
 
-### US16 — Dashboard: Total de Entregas
+---
 
-**Como** dono do estabelecimento, **quero** ver o total de entregas no dashboard
-**para que** eu acompanhe o volume operacional.
+## US16 — Configuração de Parâmetros de Remuneração
 
-**Critérios de aceitação:**
+**Como** dono do estabelecimento,
+**quero** configurar e editar a taxa fixa e o coeficiente por km rodado usados no cálculo de pagamento dos motoboys,
+**para que** eu possa ajustar a remuneração conforme a realidade do negócio.
 
-- O indicador conta as entregas finalizadas no período selecionado.
-- O valor é exibido como número inteiro.
-- O total considera apenas entregas do estabelecimento do dono autenticado.
+### Critérios de aceitação
+- É possível cadastrar/editar o valor da taxa fixa por entrega.
+- É possível cadastrar/editar o coeficiente que multiplica o km rodado.
+- Alterações nos valores não afetam entregas já calculadas anteriormente, apenas as futuras.
+- O sistema valida que os valores informados sejam numéricos e positivos.
+- Apenas o dono do estabelecimento pode alterar esses parâmetros.
 
-### US17 — Dashboard: Avaliação Média
+---
 
-**Como** dono do estabelecimento, **quero** ver a avaliação média no dashboard
-**para que** eu meça a satisfação dos recebedores.
+## US17 — Cálculo de Ganhos por Entrega
 
-**Critérios de aceitação:**
+**Como** sistema,
+**quero** calcular automaticamente o valor a receber pelo motoboy em cada entrega finalizada,
+**para que** o dono tenha o valor correto sem precisar calcular manualmente.
 
-- O indicador calcula a média das notas (0 a 5) das entregas avaliadas no período.
-- O valor é exibido com uma casa decimal.
-- Entregas sem avaliação não entram no cálculo.
-
-### US18 — Dashboard: Distância Percorrida
-
-**Como** dono do estabelecimento, **quero** ver a distância percorrida no dashboard
-**para que** eu dimensione o esforço logístico da operação.
-
-**Critérios de aceitação:**
-
-- O indicador soma as distâncias das entregas finalizadas no período.
-- O valor é exibido em quilômetros.
-- Quando não há dados de distância, o indicador exibe estado vazio.
+### Critérios de aceitação
+- O cálculo segue a fórmula: `taxa fixa + (coeficiente × km rodado)`.
+- O cálculo usa a distância registrada da entrega.
+- O valor calculado é vinculado à entrega e ao motoboy responsável.
+- O cálculo utiliza os parâmetros vigentes no momento da conclusão da entrega.
+- Entregas canceladas ou não finalizadas não geram valor a receber.
 
 ---
 
 ## Visualizar desempenho
 
-### US19 — Página de Comentários (agregada)
+### US18 — Página de Comentários (agregada)
 
 **Como** dono do estabelecimento, **quero** visualizar uma página com os comentários
 agregados dos recebedores **para que** eu entenda a percepção geral do atendimento.
@@ -247,7 +261,7 @@ agregados dos recebedores **para que** eu entenda a percepção geral do atendim
 - A lista é ordenada da avaliação mais recente para a mais antiga.
 - É possível filtrar por nota (ex.: apenas 1 e 2 estrelas) e por período.
 
-### US20 — Visualizar Desempenho do Entregador
+### US19 — Visualizar Desempenho do Entregador
 
 **Como** dono do estabelecimento, **quero** visualizar o desempenho de um entregador
 **para que** eu identifique quem se destaca ou precisa de apoio.
@@ -262,7 +276,7 @@ agregados dos recebedores **para que** eu entenda a percepção geral do atendim
 
 ## Chat em tempo real
 
-### US21 — Chat RT: Recebedor com Estabelecimento
+### US20 — Chat RT: Recebedor com Estabelecimento
 
 **Como** dono do estabelecimento, **quero** conversar em tempo real com o recebedor
 **para que** eu esclareça dúvidas sobre a entrega rapidamente.
@@ -274,7 +288,7 @@ agregados dos recebedores **para que** eu entenda a percepção geral do atendim
 - As mensagens aparecem em tempo real para ambos os participantes, com indicação de mensagens não lidas.
 - **VALIDAR:** O histórico da conversa fica acessível pelo detalhe do pedido .
 
-### US22 — Chat RT: Estabelecimento com Entregador
+### US21 — Chat RT: Estabelecimento com Entregador
 
 **Como** dono do estabelecimento, **quero** conversar em tempo real com o entregador
 **para que** eu coordene a entrega e resolva imprevistos.

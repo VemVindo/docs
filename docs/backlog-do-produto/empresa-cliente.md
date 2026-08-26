@@ -149,17 +149,19 @@ eu acompanhe as entregas em andamento.
 - A troca registra entregador anterior, novo entregador e data/hora, preservando o histórico da atribuição anterior.
 - Entregador anterior e novo entregador são notificados da mudança.
 
-### US12 — Importar Pedido via Endpoint
+### US12 — Integração com Outros Sistemas
 
-**Como** dono do estabelecimento com sistema próprio, **quero** importar pedidos por
-um endpoint de integração **para que** meus pedidos entrem na plataforma sem digitação manual.
+**Como** dono do estabelecimento que já registra pedidos em outro sistema, **quero**
+importar esses pedidos para dentro da plataforma por meio de uma integração **para que**
+eu não precise digitar de novo o que já existe no meu outro sistema.
 
 **Critérios de aceitação:**
 
-- O endpoint exige autenticação (token/chave de API do estabelecimento).
-- O payload aceito contém: nome e telefone do recebedor, endereço de entrega completo, descrição/itens e observações (opcional).
-- Payloads sem os campos obrigatórios são rejeitados com mensagem de erro descritiva.
-- Um pedido válido é criado com status "Pendente" e o endpoint retorna o identificador gerado.
+- A integração aceita pedidos vindos de outro sistema do estabelecimento, sem digitação manual.
+- Cada pedido importado traz: nome e telefone do recebedor, endereço de entrega completo, descrição/itens e observações (opcional).
+- Pedidos sem os dados obrigatórios são preenchidos parcialmente e uma solicitação de completude do pedido é enviada para o establecimento.
+- Um pedido importado com sucesso entra na plataforma com status "Pendente" e recebe um identificador próprio.
+- A integração é protegida por uma credencial exclusiva do estabelecimento, garantindo que só os pedidos dele sejam importados.
 
 ---
 

@@ -68,18 +68,19 @@ Histórias de usuário da persona que executa as entregas, organizadas conforme 
 
 ---
 
-### US05 — Ver alerta de atraso
+### US05 — Emitir alerta de atraso
 
-**Como** entregador, **quero** receber alertas sobre possíveis atrasos **para** identificar entregas fora do prazo previsto e tomar as medidas necessárias. 
+**Como** entregador, **quero** emitir um alerta de atraso quando algo acontecer no meio do caminho **para** avisar o estabelecimento de que a entrega pode atrasar.
 
 **Critérios de aceite:**
 
-- O sistema deve identificar quando uma entrega ultrapassar o prazo previsto.
-- O sistema deve exibir um alerta visível para o entregador quando houver atraso.
-- O alerta deve identificar o pedido correspondente.
-- O alerta deve apresentar o horário previsto da entrega.
-- O sistema deve indicar claramente que a entrega está atrasada.
-- O alerta deve deixar de ser apresentado quando a entrega for finalizada ou cancelada.
+- O sistema deve permitir que o entregador emita um alerta de atraso durante uma entrega em andamento.
+- O entregador deve informar o motivo do atraso (ex.: trânsito, problema no veículo, endereço incorreto) e, opcionalmente, uma observação.
+- O alerta é sempre emitido pelo entregador; o estabelecimento não emite esse alerta.
+- O alerta deve ser vinculado ao pedido correspondente e registrar a data e o horário da emissão.
+- Após emitido, o alerta deve ficar visível para o estabelecimento e para o recebedor do pedido.
+- O sistema deve confirmar ao entregador que o alerta foi enviado.
+- O sistema deve informar quando não for possível enviar o alerta.
 
 ---
 

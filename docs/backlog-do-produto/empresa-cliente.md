@@ -17,10 +17,10 @@ estabelecimento **para que** eu possa começar a operar entregas com uma identid
 
 **Critérios de aceitação:**
 
-- O formulário solicita: nome fantasia, razão social, CNPJ, e-mail, telefone e endereço completo (CEP, logradouro, número, complemento, bairro, cidade, UF).
-- CNPJ, e-mail e telefone são validados quanto ao formato; CNPJ e e-mail devem ser únicos na plataforma.
+- O cadastro pode ser feito por CNPJ (empresas) ou por CPF (produtores menores).
+- O formulário solicita: nome fantasia, documento (CNPJ ou CPF), e-mail, telefone e endereço completo (CEP, logradouro, número, complemento, bairro, cidade, UF); a razão social é obrigatória apenas quando o cadastro é por CNPJ.
+- O documento informado (CNPJ ou CPF), o e-mail e o telefone são validados quanto ao formato; documento e e-mail devem ser únicos na plataforma.
 - Nenhum campo obrigatório pode ser salvo em branco (complemento é opcional).
-- Ao concluir, o estabelecimento é associado ao usuário dono e ele é levado ao painel autenticado.
 
 ### US02 — Visualizar Info Empresariais
 
@@ -29,9 +29,8 @@ da minha empresa **para que** eu confira se os dados estão corretos e atualizad
 
 **Critérios de aceitação:**
 
-- A tela exibe, em modo somente-leitura: nome fantasia, razão social, CNPJ, e-mail, telefone e endereço completo.
+- A tela exibe, em modo somente-leitura: nome fantasia, razão social (quando houver), documento (CNPJ ou CPF), e-mail, telefone e endereço completo.
 - São exibidas as datas de criação e da última atualização do cadastro.
-- Apenas o dono autenticado acessa os dados do seu próprio estabelecimento.
 
 ### US03 — Editar Info Empresariais
 
@@ -40,7 +39,7 @@ da minha empresa **para que** eu confira se os dados estão corretos e atualizad
 
 **Critérios de aceitação:**
 
-- São editáveis: nome fantasia, e-mail, telefone e endereço completo; CNPJ e razão social são somente-leitura.
+- São editáveis: nome fantasia, e-mail, telefone e endereço completo; o documento (CNPJ ou CPF) e a razão social são somente-leitura.
 - Os novos valores passam pelas mesmas validações de formato e unicidade do cadastro.
 - Ao salvar, a data de última atualização é registrada e as alterações aparecem na visualização.
 - É possível cancelar a edição sem alterar os dados atuais.
@@ -62,7 +61,7 @@ plataforma: quem o cadastra é a empresa, e ele apenas realiza login depois.
 - Ao cadastrar, o perfil de entregador é criado e vinculado ao estabelecimento no mesmo passo (o vínculo só ocorre no cadastro).
 - Cada entregador pode estar vinculado a apenas uma empresa; um CPF já cadastrado por outra empresa não pode ser cadastrado novamente.
 - Após o cadastro, o entregador consta na frota e passa a poder acessar a plataforma via login.
-- **VALIDAR: como a credencial de acesso do entregador é definida no cadastro? (senha gerada pelo sistema / definida pela empresa / primeiro acesso define a senha)**
+- Uma senha temporária do perfil do entregador vai ser gerada após o cadastro, e após o acesso da plataforma ele vai conseguir alterar a senha.
 
 ### US05 — Visualizar Frota (total)
 
@@ -71,31 +70,20 @@ vinculados **para que** eu tenha a visão completa da minha frota.
 
 **Critérios de aceitação:**
 
-- A lista exibe, por entregador: nome, tipo de veículo, status (ativo/inativo) e situação (online/offline).
+- A lista exibe, por entregador: nome, tipo de veículo e situação de trabalho no dia (online/offline).
 - É apresentado o total de entregadores vinculados.
 - Apenas entregadores do estabelecimento do dono autenticado são listados.
 
-### US06 — Ver Entregadores Online Hoje
+### US06 — Remover Entregador
 
-**Como** dono do estabelecimento, **quero** ver quais entregadores estão online hoje
-**para que** eu saiba quem está disponível para receber entregas agora.
-
-**Critérios de aceitação:**
-
-- A lista mostra apenas entregadores com situação online na data atual.
-- Cada item exibe nome, tipo de veículo e horário do último sinal de atividade.
-- É apresentada a contagem de entregadores online.
-
-### US07 — Remover / Desativar Entregador
-
-**Como** dono do estabelecimento, **quero** remover ou desativar um entregador
-**para que** ele deixe de receber novas entregas quando não faz mais parte da frota.
+**Como** dono do estabelecimento, **quero** remover um entregador
+**para que** ele deixe de fazer parte da frota e de receber novas entregas.
 
 **Critérios de aceitação:**
 
 - A ação exige confirmação explícita antes de ser aplicada.
-- Um entregador com entrega em andamento não pode ser desativado antes da conclusão ou reatribuição do pedido.
-- Após desativado, o entregador não aparece como disponível para novas atribuições e perde o acesso via login.
+- Ao remover um entregador com entregas em andamento, os pedidos são reatribuídos automaticamente a outro entregador online e disponível.
+- Após a remoção, o entregador não aparece mais na frota, não recebe novas atribuições e perde o acesso via login.
 - O vínculo é encerrado, preservando o histórico de entregas já realizadas.
 - Com o vínculo encerrado, o CPF fica livre para ser cadastrado por outra empresa.
 
@@ -103,7 +91,7 @@ vinculados **para que** eu tenha a visão completa da minha frota.
 
 ## Gerenciar pedidos
 
-### US08 — Cadastrar Novo Pedido
+### US07 — Cadastrar Novo Pedido
 
 **Como** dono do estabelecimento, **quero** cadastrar um novo pedido **para que**
 ele entre na fila para ser atribuído a um entregador.
@@ -113,21 +101,21 @@ ele entre na fila para ser atribuído a um entregador.
 - O formulário solicita: nome do recebedor, telefone do recebedor, endereço de entrega completo, descrição/itens do pedido e observações (opcional).
 - Endereço de entrega e contato do recebedor são obrigatórios.
 - O pedido é criado com status inicial "Pendente", é calculado o valor da entrega e data/hora de criação.
+- Opcionalmente, é possível atribuir um entregador online e disponível já no momento da criação do pedido; quando atribuído na criação, o pedido entra como "Em andamento" em vez de "Pendente".
 - Ao concluir, o pedido aparece na lista de pedidos ativos.
 
-### US09 — Atribuir Entrega a Entregador
+### US08 — Atribuir Entrega a Entregador
 
 **Como** dono do estabelecimento, **quero** atribuir um pedido a um entregador
 disponível **para que** a entrega seja iniciada.
 
 **Critérios de aceitação:**
 
-- Só é possível selecionar entregadores ativos e disponíveis da frota.
-- Ao atribuir, o pedido muda para o status "Em andamento" e registra o entregador responsável e a data/hora da atribuição.
+- Só é possível selecionar entregadores online e disponíveis da frota.
 - O entregador atribuído é notificado do novo pedido.
 - Um pedido já finalizado não pode ser atribuído.
 
-### US10 — Visualizar Pedidos Ativos
+### US09 — Visualizar Pedidos Ativos
 
 **Como** dono do estabelecimento, **quero** visualizar os pedidos ativos **para que**
 eu acompanhe as entregas em andamento.
@@ -138,7 +126,7 @@ eu acompanhe as entregas em andamento.
 - Cada item mostra: identificador do pedido, recebedor, entregador (quando houver), status atual e data/hora de criação.
 - A lista permite abrir o detalhe de cada pedido.
 
-### US11 — Visualizar Pedidos Finalizados
+### US10 — Visualizar Pedidos Finalizados
 
 **Como** dono do estabelecimento, **quero** visualizar os pedidos finalizados
 **para que** eu consulte o histórico de entregas concluídas.
@@ -149,19 +137,19 @@ eu acompanhe as entregas em andamento.
 - Cada item mostra: identificador do pedido, recebedor, entregador responsável, valor da entrega, data/hora de conclusão e avaliação recebida (quando houver).
 - É possível filtrar por período (data inicial e final).
 
-### US12 — Reatribuir Entregador
+### US11 — Reatribuir Entregador
 
 **Como** dono do estabelecimento, **quero** reatribuir um pedido a outro entregador
 **para que** a entrega continue caso o entregador original fique indisponível.
 
 **Critérios de aceitação:**
 
-- A reatribuição só é permitida para pedidos com status "Em andamento".
-- O novo entregador deve estar ativo e disponível.
+- A reatribuição só é permitida para pedidos com status "Em andamento" ou "Pendente".
+- O novo entregador deve estar online e disponível.
 - A troca registra entregador anterior, novo entregador e data/hora, preservando o histórico da atribuição anterior.
 - Entregador anterior e novo entregador são notificados da mudança.
 
-### US13 — Importar Pedido via Endpoint - Empresa??? Sistema?
+### US12 — Importar Pedido via Endpoint
 
 **Como** dono do estabelecimento com sistema próprio, **quero** importar pedidos por
 um endpoint de integração **para que** meus pedidos entrem na plataforma sem digitação manual.
@@ -177,7 +165,7 @@ um endpoint de integração **para que** meus pedidos entrem na plataforma sem d
 
 ## Monitorar entregas
 
-### US14 — Ver Detalhe da Entrega
+### US13 — Ver Detalhe da Entrega
 
 **Como** dono do estabelecimento, **quero** ver o detalhe de uma entrega específica
 **para que** eu acompanhe seu andamento e dados completos.
@@ -188,43 +176,44 @@ um endpoint de integração **para que** meus pedidos entrem na plataforma sem d
 - Quando disponível, exibe a localização atual do entregador e a distância/tempo estimado.
 - É possível acessar o detalhe a partir das listas de pedidos ativos e finalizados.
 
-## US15 — Dashboard: Indicadores Operacionais
+### US14 — Dashboard: Indicadores Operacionais
 
 **Como** dono do estabelecimento, **quero** visualizar os principais indicadores operacionais no dashboard, **para que** eu possa avaliar a agilidade, o volume, a satisfação dos recebedores, o esforço logístico e o desempenho geral da operação.
 
-### Critérios de aceitação
+**Critérios de aceitação:**
 
-* Todos os indicadores devem respeitar o período selecionado pelo usuário.
-* Todos os indicadores devem considerar apenas dados do estabelecimento pertencente ao dono autenticado.
-* Todos os indicadores devem considerar apenas entregas finalizadas, exceto quando especificado de outra forma.
-* O dashboard deve apresentar o tempo médio de entrega, calculado a partir do intervalo entre a atribuição e a conclusão de cada entrega finalizada.
-* Quando não houver entregas no período, o indicador de tempo médio deve apresentar estado vazio, sem gerar erro.
-* O dashboard deve apresentar o total de entregas finalizadas no período, exibido como número inteiro.
-* O dashboard deve apresentar a avaliação média das entregas avaliadas no período, considerando notas de 0 a 5 e exibindo o resultado com uma casa decimal.
-* Entregas sem avaliação não devem ser consideradas no cálculo da avaliação média.
-* O dashboard deve apresentar a distância total percorrida nas entregas finalizadas, exibida em quilômetros.
-* Quando não houver dados de distância, o indicador deve apresentar estado vazio, sem gerar erro.
-* O dashboard deve apresentar a taxa de entregas concluídas em relação ao total de entregas atribuídas ou iniciadas no período.
-* O dashboard deve apresentar a quantidade de entregas em andamento.
-* O dashboard deve apresentar a quantidade e a taxa de entregas canceladas no período.
-* O dashboard deve apresentar a quantidade de entregas por período, permitindo identificar variações no volume operacional.
-* O dashboard deve apresentar a distribuição das entregas por status, como pendente, atribuída, em andamento, concluída e cancelada.
-* O dashboard deve apresentar a quantidade de entregas realizadas por cada entregador, valor médio recebido por entrega e quanto o entregador produziu no período.
-* O dashboard deve apresentar a média de avaliações recebidas e, quando aplicável, a distribuição das notas atribuídas.
-* O dashboard deve permitir comparar os principais indicadores com períodos anteriores.
-* Todos os indicadores devem ser atualizados de acordo com os filtros selecionados pelo usuário.
-* Nenhum indicador deve apresentar dados pertencentes a outros estabelecimentos.
-* Quando não houver dados suficientes para o cálculo de um indicador, o dashboard deve apresentar um estado vazio ou uma mensagem apropriada, sem gerar erros.
+- Todos os indicadores devem respeitar o período selecionado pelo usuário.
+- Todos os indicadores devem considerar apenas dados do estabelecimento pertencente ao dono autenticado.
+- Todos os indicadores devem considerar apenas entregas finalizadas, exceto quando especificado de outra forma.
+- O dashboard deve apresentar o tempo médio de entrega, calculado a partir do intervalo entre a atribuição e a conclusão de cada entrega finalizada.
+- Quando não houver entregas no período, o indicador de tempo médio deve apresentar estado vazio, sem gerar erro.
+- O dashboard deve apresentar o total de entregas finalizadas no período, exibido como número inteiro.
+- O dashboard deve apresentar a avaliação média das entregas avaliadas no período, considerando notas de 0 a 5 e exibindo o resultado com uma casa decimal.
+- Entregas sem avaliação não devem ser consideradas no cálculo da avaliação média.
+- O dashboard deve apresentar a distância total percorrida nas entregas finalizadas, exibida em quilômetros.
+- Quando não houver dados de distância, o indicador deve apresentar estado vazio, sem gerar erro.
+- O dashboard deve apresentar a taxa de entregas concluídas em relação ao total de entregas atribuídas ou iniciadas no período.
+- O dashboard deve apresentar a quantidade de entregas em andamento.
+- O dashboard deve apresentar a quantidade e a taxa de entregas canceladas no período.
+- O dashboard deve apresentar a quantidade de entregas por período, permitindo identificar variações no volume operacional.
+- O dashboard deve apresentar a distribuição das entregas por status, como pendente, atribuída, em andamento, concluída e cancelada.
+- O dashboard deve apresentar a quantidade de entregas realizadas por cada entregador, valor médio recebido por entrega e quanto o entregador produziu no período.
+- O dashboard deve apresentar a média de avaliações recebidas e, quando aplicável, a distribuição das notas atribuídas.
+- O dashboard deve permitir comparar os principais indicadores com períodos anteriores.
+- Todos os indicadores devem ser atualizados de acordo com os filtros selecionados pelo usuário.
+- Nenhum indicador deve apresentar dados pertencentes a outros estabelecimentos.
+- Quando não houver dados suficientes para o cálculo de um indicador, o dashboard deve apresentar um estado vazio ou uma mensagem apropriada, sem gerar erros.
 
 ---
 
-## US16 — Configuração de Parâmetros de Remuneração
+### US15 — Configuração de Parâmetros de Remuneração
 
 **Como** dono do estabelecimento,
 **quero** configurar e editar a taxa fixa e o coeficiente por km rodado usados no cálculo de pagamento dos motoboys,
 **para que** eu possa ajustar a remuneração conforme a realidade do negócio.
 
-### Critérios de aceitação
+**Critérios de aceitação:**
+
 - É possível cadastrar/editar o valor da taxa fixa por entrega.
 - É possível cadastrar/editar o coeficiente que multiplica o km rodado.
 - Alterações nos valores não afetam entregas já calculadas anteriormente, apenas as futuras.
@@ -233,13 +222,14 @@ um endpoint de integração **para que** meus pedidos entrem na plataforma sem d
 
 ---
 
-## US17 — Cálculo de Ganhos por Entrega
+### US16 — Cálculo de Ganhos por Entrega
 
 **Como** sistema,
 **quero** calcular automaticamente o valor a receber pelo motoboy em cada entrega finalizada,
 **para que** o dono tenha o valor correto sem precisar calcular manualmente.
 
-### Critérios de aceitação
+**Critérios de aceitação:**
+
 - O cálculo segue a fórmula: `taxa fixa + (coeficiente × km rodado)`.
 - O cálculo usa a distância registrada da entrega.
 - O valor calculado é vinculado à entrega e ao motoboy responsável.
@@ -250,7 +240,7 @@ um endpoint de integração **para que** meus pedidos entrem na plataforma sem d
 
 ## Visualizar desempenho
 
-### US18 — Página de Comentários (agregada)
+### US17 — Página de Comentários (agregada)
 
 **Como** dono do estabelecimento, **quero** visualizar uma página com os comentários
 agregados dos recebedores **para que** eu entenda a percepção geral do atendimento.
@@ -261,7 +251,7 @@ agregados dos recebedores **para que** eu entenda a percepção geral do atendim
 - A lista é ordenada da avaliação mais recente para a mais antiga.
 - É possível filtrar por nota (ex.: apenas 1 e 2 estrelas) e por período.
 
-### US19 — Visualizar Desempenho do Entregador
+### US18 — Visualizar Desempenho do Entregador
 
 **Como** dono do estabelecimento, **quero** visualizar o desempenho de um entregador
 **para que** eu identifique quem se destaca ou precisa de apoio.
@@ -276,7 +266,7 @@ agregados dos recebedores **para que** eu entenda a percepção geral do atendim
 
 ## Chat em tempo real
 
-### US20 — Chat RT: Recebedor com Estabelecimento
+### US19 — Chat RT: Recebedor com Estabelecimento
 
 **Como** dono do estabelecimento, **quero** conversar em tempo real com o recebedor
 **para que** eu esclareça dúvidas sobre a entrega rapidamente.
@@ -286,9 +276,9 @@ agregados dos recebedores **para que** eu entenda a percepção geral do atendim
 - A conversa é vinculada a um pedido específico.
 - Cada mensagem registra autor, conteúdo e data/hora de envio.
 - As mensagens aparecem em tempo real para ambos os participantes, com indicação de mensagens não lidas.
-- **VALIDAR:** O histórico da conversa fica acessível pelo detalhe do pedido .
+- O histórico da conversa é deletado após a conclusão da entrega.
 
-### US21 — Chat RT: Estabelecimento com Entregador
+### US20 — Chat RT: Estabelecimento com Entregador
 
 **Como** dono do estabelecimento, **quero** conversar em tempo real com o entregador
 **para que** eu coordene a entrega e resolva imprevistos.
@@ -298,4 +288,4 @@ agregados dos recebedores **para que** eu entenda a percepção geral do atendim
 - A conversa é vinculada ao pedido/entrega em andamento e ao entregador responsável.
 - Cada mensagem registra autor, conteúdo e data/hora de envio.
 - As mensagens aparecem em tempo real para ambos os participantes, com indicação de mensagens não lidas.
-- O histórico da conversa fica acessível pelo detalhe da entrega.
+- O histórico da conversa é deletado após a conclusão da entrega.

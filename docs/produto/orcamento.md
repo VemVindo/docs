@@ -25,7 +25,7 @@ Como o projeto está sendo desenvolvido por estudantes, o custo financeiro de m�
 | Quantidade de integrantes        | 7 estudantes         |
 | Custo de mão de obra considerado | R$ 0,00              |
 | Moeda utilizada                  | Real Brasileiro (R$) |
-| Data de referência               | 30/08/2026           |
+| Data de referência               | 02/09/2026           |
 | Modelo do produto                | SaaS B2B multitenant |
 | Aplicação                        | Web                  |
 
@@ -301,23 +301,255 @@ variável conforme processamento, armazenamento e demais recursos
 
 O VemVindo apresenta ao destinatário a localização e o trajeto da entrega em um mapa.
 
-Essa funcionalidade depende de APIs externas para recursos como:
+A solução definida para essa funcionalidade utiliza majoritariamente tecnologias open source e serviços com níveis gratuitos, buscando reduzir custos variáveis relacionados à quantidade de visualizações e entregas realizadas pela plataforma.
 
-* Exibição de mapas;
-* Geocodificação;
+A stack definida é composta por:
+
+* [**MapLibre GL**](https://maplibre.org) para renderização do mapa;
+* [**OpenFreeMap**](https://openfreemap.org) para fornecimento dos tiles durante o MVP;
+* [**Protomaps**](https://protomaps.com) como alternativa para hospedagem própria dos tiles em produção;
+* [**ViaCEP**](https://viacep.com.br) para obtenção dos dados do endereço a partir do CEP;
+* [**Geoapify**](https://www.geoapify.com) para geocodificação aproximada;
+* [**OSRM**](https://project-osrm.org) para cálculo de rotas, distâncias e estimativas;
+* **Geolocation API + WebSocket** para rastreamento da localização do entregador.
+
+Os preços em dólar apresentados nesta seção utilizam como referência a cotação aproximada de **US$ 1,00 = R$ 5,10** em 02/09/2026.
+
+#### 7.1.1 Renderização do mapa
+
+Para a renderização visual dos mapas foi escolhido o [**MapLibre GL**](https://maplibre.org), biblioteca open source para renderização de mapas vetoriais utilizando WebGL.
+
+Por se tratar de uma biblioteca executada no frontend, sua utilização não possui cobrança baseada em usuários, visualizações ou requisições.
+
+| Serviço | Finalidade | Custo |
+| :------ | :--------- | ----: |
+| MapLibre GL | Renderização do mapa no frontend | R$ 0,00 |
+
+**Custo estimado:**
+
+```text
+Desenvolvimento: R$ 0,00/mês
+Produção: R$ 0,00/mês
+```
+
+---
+
+#### 7.1.2 Tiles do mapa
+
+Os tiles representam os dados visuais utilizados para construir o fundo do mapa exibido pelo MapLibre.
+
+Foram definidas duas estratégias diferentes para o VemVindo.
+
+##### OpenFreeMap — MVP
+
+Durante o MVP, será utilizada a instância pública do [**OpenFreeMap**](https://openfreemap.org).
+
+O serviço permite utilização gratuita e comercial, sem limite definido de visualizações ou requisições e sem necessidade de chave de API.
+
+| Serviço | Utilização | Custo |
+| :------ | :--------- | ----: |
+| OpenFreeMap | Tiles durante MVP e desenvolvimento | R$ 0,00 |
+
+Entretanto, por se tratar de uma infraestrutura pública gratuita, atualmente não existe garantia formal de SLA ou suporte personalizado. Dessa forma, sua utilização é mais adequada ao MVP do que como dependência principal de uma aplicação comercial em produção.
+
+**Custo estimado:**
+
+```text
+MVP: R$ 0,00/mês
+```
+
+##### Protomaps — Produção
+
+Para produção, uma alternativa prevista é utilizar [**Protomaps**](https://protomaps.com), armazenando os tiles do mapa em um arquivo `.pmtiles`.
+
+Uma possibilidade é utilizar o **Cloudflare R2**, que oferece armazenamento de objetos e não cobra pela transferência dos arquivos para a Internet.
+
+O nível gratuito atual do R2 inclui:
+
+| Recurso | Franquia gratuita mensal |
+| :------ | -----------------------: |
+| Armazenamento | 10 GB |
+| Operações de escrita/listagem | 1 milhão |
+| Operações de leitura | 10 milhões |
+| Transferência para Internet | Gratuita |
+
+Acima da franquia gratuita:
+
+| Recurso | Preço |
+| :------ | ----: |
+| Armazenamento | US$ 0,015/GB-mês ≈ R$ 0,08/GB-mês |
+| Operações de leitura | US$ 0,36/milhão ≈ R$ 1,84/milhão |
+| Operações de escrita/listagem | US$ 4,50/milhão ≈ R$ 22,95/milhão |
+| Transferência para Internet | R$ 0,00 |
+
+Dessa forma, caso o arquivo PMTiles e a utilização do VemVindo permaneçam dentro da franquia gratuita do serviço, a hospedagem do mapa poderá continuar com custo zero.
+
+**Custo estimado:**
+
+```text
+Produção de baixo consumo: R$ 0,00/mês
+
+Acima da franquia gratuita:
+variável conforme armazenamento e quantidade de operações
+```
+
+---
+
+#### 7.1.3 Geocodificação e endereços
+
+Para o cadastro dos endereços, foi definida uma estratégia que busca reduzir tanto problemas de precisão quanto a quantidade de requisições a serviços pagos.
+
+O fluxo previsto é:
+
+```text
+CEP
+ ↓
+ViaCEP
+ ↓
+Geocodificação aproximada
+ ↓
+Posicionamento manual do pino
+ ↓
+Coordenada validada e armazenada
+```
+
+A coordenada definitiva é aquela confirmada pelo usuário por meio do pino no mapa, e não necessariamente o resultado retornado pelo geocodificador.
+
+Essa estratégia também permite armazenar as coordenadas no banco de dados e reutilizá-las posteriormente, evitando realizar novas requisições de geocodificação para o mesmo endereço.
+
+##### ViaCEP
+
+O [**ViaCEP**](https://viacep.com.br) será utilizado inicialmente para consultar informações relacionadas ao CEP informado pelo usuário.
+
+| Serviço | Finalidade | Custo |
+| :------ | :--------- | ----: |
+| ViaCEP  | Consulta de endereços por CEP | R$ 0,00 |
+
+##### Geoapify
+
+O [**Geoapify**](https://www.geoapify.com) será utilizado como serviço de geocodificação aproximada.
+
+Uma requisição de Geocoding, Reverse Geocoding ou Address Autocomplete corresponde normalmente a um crédito.
+
+Os principais planos considerados são:
+
+|  Plano | Créditos | Preço |
+| :----: | -------: | ----: |
+|  Free  |  3.000 créditos/dia | R$ 0,00 |
+| API 10 | 10.000 créditos/dia | US$ 59/mês ≈ R$ 300,90/mês |
+| API 25 | 25.000 créditos/dia | US$ 109/mês ≈ R$ 555,90/mês |
+
+Para o funcionamento inicialmente previsto do VemVindo, o plano gratuito permite até aproximadamente:
+
+```text
+3.000 requisições de geocodificação por dia
+```
+
+Como as coordenadas confirmadas serão armazenadas no sistema, a expectativa é que a geocodificação seja realizada principalmente durante o cadastro de um novo endereço, e não em todas as visualizações do rastreamento.
+
+**Custo estimado:**
+
+```text
+MVP e baixo volume: R$ 0,00/mês
+
+Acima de 3.000 créditos/dia:
+a partir de aproximadamente R$ 300,90/mês
+```
+
+---
+
+#### 7.1.4 Cálculo de rotas e distâncias
+
+Para cálculo de rotas foi escolhido o [**Open Source Routing Machine (OSRM)**](https://project-osrm.org).
+
+O OSRM utiliza os dados viários do OpenStreetMap e disponibiliza funcionalidades como:
+
 * Cálculo de rotas;
 * Cálculo de distância;
-* Estimativa de tempo de chegada.
+* Cálculo de duração;
+* Matriz de distâncias e tempos;
+* Map matching.
 
-O próprio escopo do produto prevê que a utilização do mapa seja configurável para permitir o controle desse custo.
+No VemVindo serão utilizados principalmente:
 
-| Serviço        | Finalidade                            | Provedor  |     Custo |
-| -------------- | ------------------------------------- | --------- | --------: |
-| API de mapas   | Exibição do mapa                      | A definir | A definir |
-| API de rotas   | Cálculo de trajetos                   | A definir | A definir |
-| Geocodificação | Conversão de endereços em coordenadas | A definir | A definir |
+```text
+Directions → cálculo da rota da entrega
 
-> O custo desses serviços não deve ser considerado R$ 0,00 enquanto a tecnologia não estiver definida.
+Table → cálculo de distância e métricas utilizadas nos dashboards
+```
+
+O software OSRM é open source e não possui cobrança por requisição.
+
+Entretanto, diferentemente de uma API externa, será necessário manter uma instância própria do serviço.
+
+Portanto:
+
+```text
+Custo da API OSRM = R$ 0,00
+```
+
+---
+
+#### 7.1.5 Rastreamento do entregador
+
+O rastreamento utiliza recursos disponíveis diretamente no navegador ou dispositivo do entregador.
+
+O fluxo definido é:
+
+```text
+Geolocation API
+      ↓
+watchPosition()
+      ↓
+WebSocket do VemVindo
+      ↓
+Backend
+      ↓
+Atualização do marcador no mapa
+```
+
+A **Geolocation API** disponibilizada pelo navegador não possui cobrança por utilização.
+
+Da mesma forma, a comunicação via WebSocket é implementada pela própria aplicação e não exige contratação de uma API externa específica.
+
+| Serviço | Finalidade | Custo adicional de API |
+| :------ | :--------- | ---------------------: |
+| Geolocation API | Obtenção da localização do entregador | R$ 0,00 |
+| WebSocket | Transmissão das coordenadas | R$ 0,00 |
+
+Os recursos computacionais utilizados pelo WebSocket fazem parte da infraestrutura do backend e, portanto, devem ser contabilizados na hospedagem da aplicação, evitando duplicidade neste orçamento.
+
+**Custo adicional estimado:**
+
+```text
+R$ 0,00/mês
+```
+
+---
+
+#### 7.1.6 Resumo dos custos da solução de mapas
+
+| Componente              | Solução                 |               MVP |                         Produção |
+| :---------------------- | :---------------------- | ----------------: | -------------------------------: |
+| Renderização            | MapLibre GL             |           R$ 0,00 |                          R$ 0,00 |
+| Tiles                   | OpenFreeMap / Protomaps |           R$ 0,00 |              R$ 0,00 ou variável |
+| Consulta por CEP        | ViaCEP                  |           R$ 0,00 |                          R$ 0,00 |
+| Geocodificação          | Geoapify                |           R$ 0,00 | R$ 0,00 ou a partir de R$ 300,90 |
+| Rotas e distâncias      | OSRM                    |          R$ 0,00* |           Infraestrutura própria |
+| Tracking                | Geolocation API         |           R$ 0,00 |                          R$ 0,00 |
+| Comunicação do tracking | WebSocket               | R$ 0,00 adicional |              Incluído no backend |
+
+> * Durante o desenvolvimento, o OSRM pode ser executado localmente pela equipe, não gerando custo adicional de hospedagem.
+
+Caso o volume de geocodificação ultrapasse o plano gratuito do Geoapify e seja necessário contratar o plano API 10:
+
+```text
+Geoapify API 10:  R$ 300,90
+---------------------------------
+Total estimado:   R$ 423,30/mês
+```
+
+Dessa forma, a arquitetura escolhida evita cobranças diretamente proporcionais à quantidade de visualizações do mapa ou cálculos de rota, mantendo o principal custo da solução relacionado à infraestrutura utilizada para executar o OSRM.
 
 ---
 

@@ -135,6 +135,164 @@ A arquitetura exige, no mínimo, hospedagem para o frontend, backend e mecanismo
 | Banco de dados          | Persistência dos dados                      | A definir |          A definir |
 | Domínio personalizado   | Endereço público do sistema                 | A definir |          A definir |
 
+### 6.3 Hospedagem do Banco de Dados
+
+Para a persistência dos dados do VemVindo, foram consideradas soluções baseadas em **bancos de dados relacionais**, principalmente PostgreSQL.
+
+As alternativas analisadas representam diferentes modelos de hospedagem:
+
+* **Supabase:** plataforma gerenciada baseada em PostgreSQL, oferecendo também autenticação, armazenamento e APIs;
+* **Neon:** PostgreSQL gerenciado e serverless, com cobrança baseada principalmente no consumo;
+* **Hospedagem própria em PaaS:** execução de uma instância PostgreSQL em uma plataforma como Railway e Render, dando à equipe maior controle sobre a infraestrutura.
+
+Os preços oficiais são mantidos em dólar, pois podem variar conforme o câmbio. Os valores em reais apresentados são aproximações utilizando uma cotação de referência de aproximadamente **US$ 1,00 = R$ 5,10** em 02/09/2026.  
+
+#### 6.3.1 Supabase
+
+O [Supabase](https://supabase.com/) fornece uma instância de **PostgreSQL gerenciado** e adiciona serviços que podem ser utilizados pela aplicação, como autenticação, armazenamento de arquivos, APIs e recursos em tempo real.
+
+| Plano | Preço base | Banco de dados | Características principais |
+| :---: | :--------: | :------------: | :------------------------- |
+| [Free](https://supabase.com/pricing)  | US$ 0/mês | 500 MB | PostgreSQL dedicado, 500 MB de banco, 5 GB de transferência e até 2 projetos ativos |
+| [Pro](https://supabase.com/pricing) | US$ 25/mês ≈ R$ 127,50/mês | 8 GB incluídos | Backups diários, maior capacidade, suporte por e-mail e recursos destinados a aplicações em produção |
+
+**Estimativa inicial:**
+
+```text
+Desenvolvimento: R$ 0,00/mês
+Produção: a partir de aproximadamente R$ 127,50/mês
+```
+
+#### 6.3.2 Neon PostgreSQL
+
+O [Neon](https://neon.com/) é um serviço de **PostgreSQL gerenciado e serverless**. Seu principal diferencial é permitir que os recursos computacionais do banco diminuam ou sejam desligados automaticamente durante períodos de inatividade.
+
+| Plano | Preço | Armazenamento | Processamento |
+| :---: | :---: | :-----------: | :------------ |
+| [Free](https://neon.com/pricing) | US$ 0/mês | 0,5 GB por projeto | 100 CU-horas/mês por projeto |
+| [Launch](https://neon.com/pricing) | Conforme utilização | US$ 0,35/GB-mês | US$ 0,106 por CU-hora |
+| [Scale](https://neon.com/pricing) | Conforme utilização | US$ 0,35/GB-mês | US$ 0,222 por CU-hora |
+
+Uma **Compute Unit (CU)** representa uma unidade de capacidade computacional utilizada pelo banco de dados.
+
+No plano Launch, por exemplo:
+
+```text
+Custo mensal =
+CU-horas consumidas × US$ 0,106
++ armazenamento utilizado × US$ 0,35/GB
+```
+
+O próprio Neon apresenta como exemplo de utilização típica do plano Launch uma aplicação de carga intermitente com aproximadamente 1 GB de dados, resultando em cerca de **US$ 15/mês**, aproximadamente **R$ 76,50/mês**. Esse valor não é uma mensalidade fixa e pode ser menor ou maior conforme o consumo.
+
+**Estimativa inicial:**
+
+```text
+Desenvolvimento: R$ 0,00/mês
+Produção: variável conforme utilização
+Referência inicial: aproximadamente R$ 76,50/mês
+```
+
+#### 6.3.3 PostgreSQL hospedado em PaaS
+
+Outra possibilidade é hospedar o PostgreSQL em uma **Platform as a Service (PaaS)**, mantendo o banco integrado à infraestrutura utilizada para executar a aplicação.
+
+Como referência para este modelo, foram consideradas as plataformas [**Railway**](https://railway.com/) e [**Render**](https://render.com/).
+
+Esse modelo pode ser especialmente interessante caso o backend do VemVindo também seja hospedado na mesma plataforma, permitindo centralizar a infraestrutura e utilizar comunicação privada entre os serviços.
+
+##### [Railway](https://railway.com/)
+
+O Railway permite provisionar uma instância PostgreSQL utilizando uma imagem baseada na imagem oficial do PostgreSQL. O banco passa a ser executado como um serviço dentro do projeto, podendo se comunicar com o backend pela rede privada da plataforma.
+
+Diferentemente do Supabase e do Neon, a cobrança do Railway não é diretamente baseada no tamanho do banco ou no número de consultas. O custo considera os recursos computacionais utilizados pelo serviço.
+
+| Recurso | Preço |
+| :------ | :---- |
+| Memória RAM | US$ 10/GB-mês |
+| CPU | US$ 20/vCPU-mês |
+| Armazenamento persistente | US$ 0,15/GB-mês |
+| Transferência de saída | US$ 0,05/GB |
+
+Os principais planos da plataforma são:
+
+| Plano | Preço mínimo | Utilização incluída |
+| :---: | :----------: | :------------------ |
+| [Free](https://railway.com/pricing)  | US$ 0/mês | US$ 1 em recursos por mês |
+| [Hobby](https://railway.com/pricing) | US$ 5/mês ≈ R$ 25,50/mês | US$ 5 em utilização |
+| [Pro](https://railway.com/pricing)   | US$ 20/mês ≈ R$ 102,00/mês | US$ 20 em utilização |
+
+No plano Hobby, caso os serviços consumam menos de US$ 5 durante o mês, o valor cobrado permanece US$ 5. Caso o consumo seja superior, o valor final acompanha o consumo realizado.
+
+O PostgreSQL não possui uma cobrança adicional simplesmente por ser um banco de dados. Ele é tratado como outro serviço da infraestrutura e consome CPU, memória, armazenamento e rede.
+
+Essa alternativa pode se tornar particularmente interessante caso o **backend do VemVindo também seja hospedado no Railway**, permitindo manter aplicação e banco na mesma plataforma e utilizar comunicação por rede privada.
+
+**Estimativa inicial:**
+
+```text
+Desenvolvimento: R$ 0,00/mês ou dentro dos limites gratuitos
+
+Produção de baixo consumo: a partir de aproximadamente R$ 25,50/mês
+
+Produção com colaboração e maior capacidade:
+a partir de aproximadamente R$ 102,00/mês
+```
+
+##### [Render](https://render.com/)
+
+O Render oferece o **Render Postgres**, serviço de PostgreSQL gerenciado integrado à sua plataforma de hospedagem.
+
+A plataforma é responsável pelo provisionamento e gerenciamento da infraestrutura do banco, enquanto a equipe continua utilizando uma instância PostgreSQL convencional para armazenamento e consulta dos dados.
+
+O custo é composto principalmente pela capacidade computacional escolhida para a instância e pelo armazenamento provisionado.
+
+| Recurso | Preço |
+| :------ | :---- |
+| Instância PostgreSQL básica paga | A partir de US$ 6/mês |
+| Armazenamento PostgreSQL | US$ 0,30/GB-mês |
+| Transferência privada entre serviços Render na mesma região | Sem cobrança adicional |
+| Transferência externa excedente | Conforme utilização |
+
+A menor instância PostgreSQL paga disponibiliza aproximadamente:
+
+| Recurso | Capacidade |
+| :------ | :--------- |
+| CPU | 0,1 CPU |
+| Memória RAM | 256 MB |
+| Limite de conexões | Até 100 conexões |
+
+O Render também disponibiliza uma opção gratuita para PostgreSQL, porém ela possui uma limitação importante: **o banco gratuito expira após 30 dias**. Dessa forma, essa opção é mais apropriada para testes e prototipação do que para um ambiente permanente de desenvolvimento ou produção.
+
+| Plano | Preço base | Características |
+| :---: | :--------: | :-------------- |
+| [Free](https://render.com/pricing) | US$ 0/mês | 256 MB de RAM, 0,1 CPU, até 1 GB de armazenamento e expiração após 30 dias |
+| [Menor plano pago](https://render.com/pricing) | US$ 6/mês ≈ R$ 30,60/mês | 256 MB de RAM, 0,1 CPU e execução contínua |
+
+O armazenamento é cobrado separadamente. Considerando, por exemplo, uma instância básica com 1 GB:
+
+```text
+Instância PostgreSQL: US$ 6,00/mês
+
+Armazenamento:
+1 GB × US$ 0,30 = US$ 0,30/mês
+
+Custo aproximado:
+US$ 6,30/mês ≈ R$ 32,13/mês
+```
+
+**Estimativa inicial:**
+
+```text
+Desenvolvimento/testes temporários: R$ 0,00/mês
+
+Produção de baixo consumo:
+a partir de aproximadamente R$ 32,13/mês
+
+Produção com maior capacidade:
+variável conforme processamento, armazenamento e demais recursos
+```
+
 ---
 
 ## 7. APIs e Serviços Externos

@@ -154,7 +154,7 @@ repassar. O login é separado por persona e o papel do usuário viaja no JWT.
 | POST | `/auth/login/entregador` | público | `cpf`, `senha` | `accessToken` + usuário (com `senhaTemporaria`) |
 | GET | `/auth/me` | autenticado | — | usuário do token |
 | POST | `/auth/entregador/trocar-senha` | entregador | `senhaAtual`, `novaSenha` | confirmação |
-| POST | `/entregadores` | estabelecimento | dados do entregador | entregador + `senhaTemporaria` |
+| POST | `/entregadores` | estabelecimento | dados do entregador | entregador (com `senhaTemporaria` quando criado, ou `vinculado`) |
 | GET | `/entregadores` | estabelecimento | — | frota do estabelecimento |
 
 Todas as rotas são protegidas por padrão por um guard JWT global; as rotas
@@ -172,17 +172,24 @@ Regras de negócio do cadastro de estabelecimento:
 Cadastro e primeiro acesso do entregador:
 
 - o estabelecimento cadastra o entregador (nome, CPF, telefone, tipo de veículo e
-  placa quando aplicável) e o vincula à sua frota no mesmo passo;
-- o CPF é único na plataforma; um CPF já cadastrado retorna conflito (409);
-- o sistema gera uma senha temporária, retornada uma única vez para o
-  estabelecimento repassar ao entregador;
+  placa quando aplicável) e o vincula à sua frota no mesmo passo (o vínculo é um
+  registro na tabela `contratos`);
+- o CPF identifica o entregador: um CPF novo cria o entregador, um CPF já
+  existente apenas vincula o entregador a este estabelecimento (um mesmo
+  entregador pode servir a várias empresas);
+- vincular o mesmo entregador duas vezes ao mesmo estabelecimento retorna
+  conflito (409);
+- a senha temporária é gerada apenas quando o entregador é criado, retornada uma
+  única vez para o estabelecimento repassar;
 - no primeiro login o entregador vem com `senhaTemporaria: true` e deve trocar a
   senha em `/auth/entregador/trocar-senha`; após a troca a senha temporária
   deixa de valer.
 
 O login valida a senha com bcrypt e, em caso de sucesso, assina um JWT contendo o
-`sub`, o `role` (`ESTABELECIMENTO` ou `ENTREGADOR`) e o `establishmentId` (a
-empresa dona, usado para isolar os dados por estabelecimento).
+`sub` e o `role` (`ESTABELECIMENTO` ou `ENTREGADOR`). Para o estabelecimento o
+token carrega ainda o `establishmentId`, usado para isolar os dados por
+estabelecimento; o entregador não é preso a uma única empresa, então seu token
+não carrega esse campo.
 
 As rotas de autenticação vivem na branch `feat/auth`; na branch de infra o
 backend expõe apenas `/` e `/health/db`.

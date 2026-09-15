@@ -57,11 +57,11 @@ plataforma: quem o cadastra é a empresa, e ele apenas realiza login depois.
 **Critérios de aceitação:**
 
 - O formulário solicita: nome, CPF, telefone, tipo de veículo (moto, carro, bicicleta) e placa (quando aplicável).
-- CPF é validado quanto ao formato e deve ser único na plataforma.
-- Ao cadastrar, o perfil de entregador é criado e vinculado ao estabelecimento no mesmo passo (o vínculo só ocorre no cadastro).
-- Cada entregador pode estar vinculado a apenas uma empresa; um CPF já cadastrado por outra empresa não pode ser cadastrado novamente.
-- Após o cadastro, o entregador consta na frota e passa a poder acessar a plataforma via login.
-- Uma senha temporária do perfil do entregador vai ser gerada após o cadastro, e após o acesso da plataforma ele vai conseguir alterar a senha.
+- O CPF identifica o entregador na plataforma; um mesmo entregador pode estar vinculado a mais de uma empresa.
+- Ao cadastrar um CPF novo, o perfil do entregador é criado e vinculado ao estabelecimento no mesmo passo; se o CPF já existir, o entregador existente é apenas vinculado a este estabelecimento.
+- Um entregador já vinculado a este mesmo estabelecimento não pode ser vinculado novamente.
+- Após o cadastro, o entregador consta na frota do estabelecimento e passa a poder acessar a plataforma via login.
+- A senha temporária é gerada apenas quando o entregador é criado pela primeira vez; após o primeiro acesso ele altera a própria senha.
 
 ### US05 — Visualizar Frota (total)
 
@@ -82,10 +82,10 @@ vinculados **para que** eu tenha a visão completa da minha frota.
 **Critérios de aceitação:**
 
 - A ação exige confirmação explícita antes de ser aplicada.
-- Ao remover um entregador com entregas em andamento, os pedidos são reatribuídos automaticamente a outro entregador online e disponível.
-- Após a remoção, o entregador não aparece mais na frota, não recebe novas atribuições e perde o acesso via login.
-- O vínculo é encerrado, preservando o histórico de entregas já realizadas.
-- Com o vínculo encerrado, o CPF fica livre para ser cadastrado por outra empresa.
+- Ao remover um entregador com entregas em andamento neste estabelecimento, os pedidos são reatribuídos automaticamente a outro entregador online e disponível.
+- Após a remoção, o entregador não aparece mais na frota deste estabelecimento e não recebe novas atribuições dele.
+- O vínculo (contrato) com este estabelecimento é encerrado, preservando o histórico de entregas já realizadas.
+- O encerramento afeta apenas o vínculo com este estabelecimento; os vínculos do entregador com outras empresas e o seu acesso à plataforma permanecem.
 
 ### US21 — Editar Entregador
 

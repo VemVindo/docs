@@ -143,16 +143,25 @@ A migration gerada passa a ser aplicada automaticamente nos próximos boots.
 
 ## Autenticação
 
-O cadastro existe apenas para estabelecimentos (`Empresa`). O login é separado por
-persona, e o papel do usuário viaja no JWT.
+O estabelecimento (`Empresa`) se cadastra sozinho; o entregador não se cadastra:
+quem o cadastra é o estabelecimento, que recebe uma senha temporária para
+repassar. O login é separado por persona e o papel do usuário viaja no JWT.
 
-| Método | Rota | Corpo | Resposta |
-|---|---|---|---|
-| POST | `/auth/register` | dados do estabelecimento | estabelecimento criado |
-| POST | `/auth/login/empresa` | `email`, `senha` | `accessToken` + usuário |
-| POST | `/auth/login/entregador` | `cpf`, `senha` | `accessToken` + usuário |
+| Método | Rota | Perfil | Corpo | Resposta |
+|---|---|---|---|---|
+| POST | `/auth/register` | público | dados do estabelecimento | `accessToken` + usuário |
+| POST | `/auth/login/empresa` | público | `email`, `senha` | `accessToken` + usuário |
+| POST | `/auth/login/entregador` | público | `cpf`, `senha` | `accessToken` + usuário (com `senhaTemporaria`) |
+| GET | `/auth/me` | autenticado | — | usuário do token |
+| POST | `/auth/entregador/trocar-senha` | entregador | `senhaAtual`, `novaSenha` | confirmação |
+| POST | `/entregadores` | estabelecimento | dados do entregador | entregador + `senhaTemporaria` |
+| GET | `/entregadores` | estabelecimento | — | frota do estabelecimento |
 
-Regras de negócio do cadastro:
+Todas as rotas são protegidas por padrão por um guard JWT global; as rotas
+públicas são marcadas explicitamente. Um guard de papéis restringe cada rota ao
+perfil correto (por exemplo, só o `ESTABELECIMENTO` cadastra e lista entregadores).
+
+Regras de negócio do cadastro de estabelecimento:
 
 - é obrigatório informar `cnpj` ou `cpf`; sem nenhum dos dois o cadastro é
   rejeitado;
@@ -160,9 +169,20 @@ Regras de negócio do cadastro:
 - e-mail e documento já usados retornam conflito (409);
 - a senha tem no mínimo 8 caracteres e é armazenada com hash bcrypt.
 
+Cadastro e primeiro acesso do entregador:
+
+- o estabelecimento cadastra o entregador (nome, CPF, telefone, tipo de veículo e
+  placa quando aplicável) e o vincula à sua frota no mesmo passo;
+- o CPF é único na plataforma; um CPF já cadastrado retorna conflito (409);
+- o sistema gera uma senha temporária, retornada uma única vez para o
+  estabelecimento repassar ao entregador;
+- no primeiro login o entregador vem com `senhaTemporaria: true` e deve trocar a
+  senha em `/auth/entregador/trocar-senha`; após a troca a senha temporária
+  deixa de valer.
+
 O login valida a senha com bcrypt e, em caso de sucesso, assina um JWT contendo o
-`sub`, o `role` (`ESTABELECIMENTO` ou `ENTREGADOR`) e, para empresas, o
-`establishmentId`.
+`sub`, o `role` (`ESTABELECIMENTO` ou `ENTREGADOR`) e o `establishmentId` (a
+empresa dona, usado para isolar os dados por estabelecimento).
 
 As rotas de autenticação vivem na branch `feat/auth`; na branch de infra o
 backend expõe apenas `/` e `/health/db`.

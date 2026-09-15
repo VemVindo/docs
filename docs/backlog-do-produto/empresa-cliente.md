@@ -87,6 +87,19 @@ vinculados **para que** eu tenha a visão completa da minha frota.
 - O vínculo é encerrado, preservando o histórico de entregas já realizadas.
 - Com o vínculo encerrado, o CPF fica livre para ser cadastrado por outra empresa.
 
+### US21 — Editar Entregador
+
+**Como** dono do estabelecimento, **quero** editar os dados de um entregador da
+minha frota **para que** as informações reflitam mudanças de contato ou de veículo.
+
+**Critérios de aceitação:**
+
+- A edição é feita nas telas da empresa; o entregador não altera o próprio cadastro, apenas a sua senha de acesso.
+- São editáveis: nome, telefone, tipo de veículo e placa; o CPF é somente-leitura.
+- As alterações passam pelas mesmas validações de formato do cadastro.
+- Apenas entregadores vinculados ao estabelecimento autenticado podem ser editados.
+- Ao salvar, as alterações aparecem na visualização da frota.
+
 ---
 
 ## Gerenciar pedidos

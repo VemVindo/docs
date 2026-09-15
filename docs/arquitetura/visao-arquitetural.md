@@ -37,3 +37,17 @@ integrações.
 - **Métricas**: agregação dos dados de entrega para os dashboards.
 - **Comunicação**: chat de contingência entre as partes envolvidas na entrega.
 - **Integração**: endpoint para comunicação com o sistema de gestão do cliente.
+
+## Modelo de dados (MER)
+
+O modelo entidade-relacionamento abaixo é a referência da estrutura do banco.
+
+![Modelo entidade-relacionamento do VemVindo](/img/MER.png)
+
+Pontos que orientam a implementação:
+
+- O vínculo entre `Empresa` e `Entregador` é N:N pela tabela `Contrato`: um mesmo
+  entregador pode estar vinculado a mais de uma empresa. Por isso `Entregador`
+  não guarda a empresa diretamente.
+- Um `Contrato` com `data_fim` em aberto representa um vínculo ativo; preencher a
+  `data_fim` encerra o vínculo daquele estabelecimento sem afetar os demais.

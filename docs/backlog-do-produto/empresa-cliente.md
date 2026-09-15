@@ -56,11 +56,12 @@ plataforma: quem o cadastra é a empresa, e ele apenas realiza login depois.
 
 **Critérios de aceitação:**
 
-- O formulário solicita: nome, CPF, telefone, tipo de veículo (moto, carro, bicicleta) e placa (quando aplicável).
-- O CPF identifica o entregador na plataforma; um mesmo entregador pode estar vinculado a mais de uma empresa.
-- Ao cadastrar um CPF novo, o perfil do entregador é criado e vinculado ao estabelecimento no mesmo passo; se o CPF já existir, o entregador existente é apenas vinculado a este estabelecimento.
+- O CPF é o identificador do entregador na plataforma; um mesmo entregador (mesmo CPF) pode estar vinculado a mais de uma empresa.
+- Cadastro e vínculo são ações separadas:
+  - **Cadastrar (CPF novo):** o formulário solicita nome, CPF, telefone, tipo de veículo (moto, carro, bicicleta) e placa (quando aplicável); o perfil do entregador é criado e vinculado ao estabelecimento no mesmo passo. Se o CPF já existir na plataforma, o cadastro é recusado e a empresa é orientada a usar o vínculo.
+  - **Vincular (CPF existente):** informando apenas o CPF, o entregador que já existe é vinculado a este estabelecimento, sem que a empresa precise redigitar os demais dados. CPF não encontrado é recusado.
 - Um entregador já vinculado a este mesmo estabelecimento não pode ser vinculado novamente.
-- Após o cadastro, o entregador consta na frota do estabelecimento e passa a poder acessar a plataforma via login.
+- Após cadastro ou vínculo, o entregador consta na frota do estabelecimento e passa a poder acessar a plataforma via login.
 - A senha temporária é gerada apenas quando o entregador é criado pela primeira vez; após o primeiro acesso ele altera a própria senha.
 
 ### US05 — Visualizar Frota (total)

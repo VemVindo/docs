@@ -154,7 +154,8 @@ repassar. O login é separado por persona e o papel do usuário viaja no JWT.
 | POST | `/auth/login/entregador` | público | `cpf`, `senha` | `accessToken` + usuário (com `senhaTemporaria`) |
 | GET | `/auth/me` | autenticado | — | usuário do token |
 | POST | `/auth/entregador/trocar-senha` | entregador | `senhaAtual`, `novaSenha` | confirmação |
-| POST | `/entregadores` | estabelecimento | dados do entregador | entregador (com `senhaTemporaria` quando criado, ou `vinculado`) |
+| POST | `/entregadores` | estabelecimento | dados do entregador | entregador criado + `senhaTemporaria` |
+| POST | `/entregadores/vinculo` | estabelecimento | `cpf` | entregador + `vinculado` |
 | GET | `/entregadores` | estabelecimento | — | frota do estabelecimento |
 
 Todas as rotas são protegidas por padrão por um guard JWT global; as rotas
@@ -171,14 +172,18 @@ Regras de negócio do cadastro de estabelecimento:
 
 Cadastro e primeiro acesso do entregador:
 
-- o estabelecimento cadastra o entregador (nome, CPF, telefone, tipo de veículo e
-  placa quando aplicável) e o vincula à sua frota no mesmo passo (o vínculo é um
-  registro na tabela `contratos`);
-- o CPF identifica o entregador: um CPF novo cria o entregador, um CPF já
-  existente apenas vincula o entregador a este estabelecimento (um mesmo
-  entregador pode servir a várias empresas);
-- vincular o mesmo entregador duas vezes ao mesmo estabelecimento retorna
+- o CPF é o identificador do entregador (chave primária da tabela `Entregador`);
+  o entregador não tem id interno, e as tabelas que o referenciam usam a coluna
+  `cpf_entregador`, mantida separada do CNPJ/CPF do estabelecimento;
+- cadastro e vínculo são rotas distintas. `POST /entregadores` cria um entregador
+  novo (nome, CPF, telefone, tipo de veículo e placa quando aplicável) e já o
+  vincula à frota de quem cadastrou (o vínculo é um registro na tabela
+  `contratos`); se o CPF já existir na plataforma, o cadastro é recusado com
   conflito (409);
+- `POST /entregadores/vinculo` recebe apenas o `cpf` e vincula um entregador que
+  já existe a este estabelecimento, sem exigir o restante dos dados (um mesmo
+  entregador pode servir a várias empresas); CPF inexistente retorna 404 e um
+  vínculo já ativo neste estabelecimento retorna 409;
 - a senha temporária é gerada apenas quando o entregador é criado, retornada uma
   única vez para o estabelecimento repassar;
 - no primeiro login o entregador vem com `senhaTemporaria: true` e deve trocar a
@@ -186,10 +191,11 @@ Cadastro e primeiro acesso do entregador:
   deixa de valer.
 
 O login valida a senha com bcrypt e, em caso de sucesso, assina um JWT contendo o
-`sub` e o `role` (`ESTABELECIMENTO` ou `ENTREGADOR`). Para o estabelecimento o
-token carrega ainda o `establishmentId`, usado para isolar os dados por
-estabelecimento; o entregador não é preso a uma única empresa, então seu token
-não carrega esse campo.
+`sub` e o `role` (`ESTABELECIMENTO` ou `ENTREGADOR`). O `sub` do entregador é o
+seu CPF; o do estabelecimento é o id da empresa. Para o estabelecimento o token
+carrega ainda o `establishmentId`, usado para isolar os dados por estabelecimento;
+o entregador não é preso a uma única empresa, então seu token não carrega esse
+campo.
 
 As rotas de autenticação vivem na branch `feat/auth`; na branch de infra o
 backend expõe apenas `/` e `/health/db`.

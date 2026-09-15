@@ -46,6 +46,10 @@ O modelo entidade-relacionamento abaixo é a referência da estrutura do banco.
 
 Pontos que orientam a implementação:
 
+- O `Entregador` é identificado pelo CPF (chave primária); não há id interno. As
+  tabelas que o referenciam (`Contrato`, `Pedido`, `HistoricoPedidoEntregadores`)
+  usam a coluna `cpf_entregador`, deixando-a separada do CNPJ/CPF do
+  estabelecimento, que vive só na tabela `Empresa`.
 - O vínculo entre `Empresa` e `Entregador` é N:N pela tabela `Contrato`: um mesmo
   entregador pode estar vinculado a mais de uma empresa. Por isso `Entregador`
   não guarda a empresa diretamente.

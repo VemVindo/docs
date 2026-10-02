@@ -68,22 +68,6 @@ Histórias de usuário da persona que executa as entregas, organizadas conforme 
 
 ---
 
-### US05 — Emitir alerta de atraso
-
-**Como** entregador, **quero** emitir um alerta de atraso quando algo acontecer no meio do caminho **para** avisar o estabelecimento de que a entrega pode atrasar.
-
-**Critérios de aceite:**
-
-- O sistema deve permitir que o entregador emita um alerta de atraso durante uma entrega em andamento.
-- O entregador deve informar o motivo do atraso (ex.: trânsito, problema no veículo, endereço incorreto) e, opcionalmente, uma observação.
-- O alerta é sempre emitido pelo entregador; o estabelecimento não emite esse alerta.
-- O alerta deve ser vinculado ao pedido correspondente e registrar a data e o horário da emissão.
-- Após emitido, o alerta deve ficar visível para o estabelecimento e para o recebedor do pedido.
-- O sistema deve confirmar ao entregador que o alerta foi enviado.
-- O sistema deve informar quando não for possível enviar o alerta.
-
----
-
 ## Finalizar entrega
 
 ### US06 — Inserir código do recebedor
@@ -104,18 +88,31 @@ Histórias de usuário da persona que executa as entregas, organizadas conforme 
 
 ## Comunicar com o estabelecimento
 
-### US07 — Chat em tempo real com o estabelecimento
+### US07 — WhatsApp: Estabelecimento com Entregador
 
-**Como** entregador, **quero** conversar em tempo real com o estabelecimento responsável pelo pedido **para** esclarecer dúvidas e resolver problemas relacionados à entrega.
+O chat interno em tempo real foi substituído pela integração com o WhatsApp
+(Cloud API da Meta). Esta história foi fundida com a
+[US20 da empresa](./empresa-cliente.md#us20--whatsapp-estabelecimento-com-entregador)
+e é tratada como um item único, com os mesmos critérios de aceitação.
+
+**Como** entregador, **quero** conversar pelo meu WhatsApp com o estabelecimento
+responsável pelo pedido **para** esclarecer dúvidas e resolver problemas
+relacionados à entrega.
 
 **Critérios de aceite:**
 
-- O sistema deve disponibilizar um chat.
-- O entregador deve conseguir enviar mensagens ao estabelecimento responsável.
-- O entregador deve conseguir receber mensagens do estabelecimento responsável.
-- As mensagens devem ser atualizadas em tempo real.
-- Cada mensagem deve apresentar a identificação do remetente.
-- Cada mensagem deve apresentar o horário de envio.
-- O entregador deve receber uma indicação quando houver novas mensagens.
-- Somente usuários autorizados e vinculados ao pedido devem acessar a conversa.
-- O sistema deve informar quando uma mensagem não puder ser enviada.
+- A conversa é vinculada ao pedido em andamento e ao entregador responsável; apenas eles e o estabelecimento têm acesso.
+- O entregador usa o próprio WhatsApp; o estabelecimento envia e recebe pela plataforma.
+- Atribuição e reatribuição de pedidos podem notificar o entregador por mensagem modelo.
+- Cada mensagem registra autor, conteúdo e data/hora; mensagens não lidas são sinalizadas ao estabelecimento.
+- O sistema informa quando uma mensagem não pôde ser entregue.
+- O histórico é deletado após a conclusão da entrega.
+
+---
+
+## Removidas do escopo
+
+### US05 — Emitir alerta de atraso
+
+Removida do escopo na versão 3.0 da divisão de histórias (02/10/2026), para
+caber no prazo de três sprints. A numeração das demais histórias foi mantida.

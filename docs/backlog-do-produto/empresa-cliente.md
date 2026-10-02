@@ -280,28 +280,43 @@ agregados dos recebedores **para que** eu entenda a percepção geral do atendim
 
 ---
 
-## Chat em tempo real
+## Comunicação via WhatsApp
 
-### US19 — Chat RT: Recebedor com Estabelecimento
+O chat interno em tempo real foi substituído pela integração com o WhatsApp, via
+WhatsApp Business Platform (Cloud API da Meta). A plataforma continua
+intermediando a conversa: nenhum contato pessoal é exposto entre recebedor e
+entregador. A US20 foi fundida com a US07 do entregador, porque as duas
+descrevem a mesma conversa.
 
-**Como** dono do estabelecimento, **quero** conversar em tempo real com o recebedor
-**para que** eu esclareça dúvidas sobre a entrega rapidamente.
+### US19 — WhatsApp: Estabelecimento com Recebedor
 
-**Critérios de aceitação:**
-
-- A conversa é vinculada a um pedido específico.
-- Cada mensagem registra autor, conteúdo e data/hora de envio.
-- As mensagens aparecem em tempo real para ambos os participantes, com indicação de mensagens não lidas.
-- O histórico da conversa é deletado após a conclusão da entrega.
-
-### US20 — Chat RT: Estabelecimento com Entregador
-
-**Como** dono do estabelecimento, **quero** conversar em tempo real com o entregador
-**para que** eu coordene a entrega e resolva imprevistos.
+**Como** dono do estabelecimento, **quero** conversar com o recebedor pelo
+WhatsApp **para que** eu esclareça dúvidas sobre a entrega no canal que ele já
+usa, sem expor contatos pessoais.
 
 **Critérios de aceitação:**
 
-- A conversa é vinculada ao pedido/entrega em andamento e ao entregador responsável.
-- Cada mensagem registra autor, conteúdo e data/hora de envio.
-- As mensagens aparecem em tempo real para ambos os participantes, com indicação de mensagens não lidas.
-- O histórico da conversa é deletado após a conclusão da entrega.
+- Mensagens enviadas e recebidas pelo número WhatsApp Business da plataforma (Cloud API da Meta).
+- Ao criar o pedido, o recebedor recebe uma mensagem modelo aprovada com o link de rastreamento da US01 do recebedor. *(novo, validar com o demandante)*
+- A conversa é vinculada a um pedido; mensagens recebidas pelo webhook são associadas ao pedido ativo do telefone do recebedor.
+- O estabelecimento lê e responde pela plataforma, com indicação de não lidas.
+- Cada mensagem registra autor, conteúdo, data/hora e situação de envio (enviada, entregue, lida, falhou).
+- Fora da janela de 24h da Meta, só mensagens modelo aprovadas são enviadas; a interface informa essa restrição.
+- O histórico é deletado após a conclusão da entrega.
+
+### US20 — WhatsApp: Estabelecimento com Entregador
+
+Item único com a [US07 do entregador](./entregador.md#us07--whatsapp-estabelecimento-com-entregador).
+
+**Como** dono do estabelecimento e como entregador, **queremos** conversar pelo
+WhatsApp sobre a entrega em andamento **para que** imprevistos sejam resolvidos
+rapidamente.
+
+**Critérios de aceitação:**
+
+- A conversa é vinculada ao pedido em andamento e ao entregador responsável; apenas eles e o estabelecimento têm acesso.
+- O entregador usa o próprio WhatsApp; o estabelecimento envia e recebe pela plataforma.
+- Atribuição e reatribuição (US08 e US11) podem notificar o entregador por mensagem modelo.
+- Cada mensagem registra autor, conteúdo e data/hora; mensagens não lidas são sinalizadas ao estabelecimento.
+- O sistema informa quando uma mensagem não pôde ser entregue.
+- O histórico é deletado após a conclusão da entrega.

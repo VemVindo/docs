@@ -39,4 +39,4 @@ cliente atendem apenas as entregas daquele cliente.
 - Acompanhamento do pedido pelo destinatário através de um link.
 - Painel com métricas de operação.
 - Avaliação de entregadores.
-- Canal de comunicação para contingências.
+- Canal de comunicação para contingências, via integração com o WhatsApp.

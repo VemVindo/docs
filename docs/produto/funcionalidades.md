@@ -36,10 +36,14 @@ Painel com indicadores da operação de entregas, incluindo:
 Registro de avaliação e feedback sobre as entregas realizadas, permitindo
 acompanhar a qualidade do serviço prestado pela frota.
 
-## Chat de contingência
+## Comunicação via WhatsApp
 
-Canal de comunicação interno para tratar situações excepcionais durante uma
-entrega, preservando a privacidade das partes envolvidas.
+Canal para tratar situações excepcionais durante uma entrega, integrado ao
+WhatsApp pela WhatsApp Business Platform (Cloud API da Meta). O estabelecimento
+conversa com o recebedor e com o entregador pela plataforma, enquanto eles usam o
+próprio WhatsApp. A plataforma intermedia as mensagens, preservando a privacidade
+das partes envolvidas. Essa integração substituiu o chat interno em tempo real
+previsto inicialmente.
 
 ## Notificações
 

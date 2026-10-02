@@ -35,7 +35,10 @@ integrações.
 - **Rastreamento público**: acesso do destinatário ao andamento por link, sem
   autenticação por conta.
 - **Métricas**: agregação dos dados de entrega para os dashboards.
-- **Comunicação**: chat de contingência entre as partes envolvidas na entrega.
+- **Comunicação**: integração com o WhatsApp (Cloud API da Meta) para a
+  conversa de contingência entre as partes envolvidas na entrega. As mensagens
+  saem pelo número WhatsApp Business da plataforma e as respostas chegam por
+  webhook, associadas ao pedido.
 - **Integração**: endpoint para comunicação com o sistema de gestão do cliente.
 
 ## Modelo de dados (MER)

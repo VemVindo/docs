@@ -23,8 +23,8 @@ title: Personas
 4. O destinatário acessa o link, informa o código quando necessário e acompanha o
    pedido, visualizando o mapa ou a estimativa de chegada conforme a configuração
    do estabelecimento.
-5. Em caso de contingência, as partes usam o canal de comunicação intermediado
-   pelo estabelecimento.
+5. Em caso de contingência, as partes conversam pelo WhatsApp, com a plataforma
+   intermediando as mensagens do estabelecimento.
 6. Ao final, a entrega é concluída e o destinatário pode avaliar o serviço.
 
 ## Observações

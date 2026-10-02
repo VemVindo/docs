@@ -12,6 +12,19 @@ gestão de cada estabelecimento. Por meio dessa integração, as entregas podem 
 originadas a partir dos pedidos já registrados no sistema do cliente, evitando
 recadastro manual e mantendo os dados alinhados.
 
+## Integração com o WhatsApp
+
+A comunicação de contingência usa a WhatsApp Business Platform (Cloud API da
+Meta). A plataforma envia mensagens pelo seu número WhatsApp Business e recebe as
+respostas por um webhook, que associa cada mensagem ao pedido ativo do telefone
+de origem. O estabelecimento lê e responde pela plataforma; recebedor e
+entregador usam o próprio WhatsApp.
+
+- Fora da janela de 24h da Meta, só mensagens modelo aprovadas podem ser
+  enviadas, como a mensagem com o link de rastreamento enviada ao criar o pedido.
+- Cada mensagem guarda autor, conteúdo, data/hora e situação de envio.
+- O histórico da conversa é deletado após a conclusão da entrega.
+
 ## Acesso do destinatário sem conta
 
 O destinatário acompanha o pedido por um link de rastreamento, sem precisar criar
@@ -21,8 +34,9 @@ consegue visualizar a entrega.
 
 ## Privacidade da comunicação
 
-A comunicação entre as partes é intermediada pelo estabelecimento. O contato
-direto entre destinatário e entregador não é exposto: a loja atua como
+A comunicação entre as partes é intermediada pelo estabelecimento, pelo número
+WhatsApp Business da plataforma. O contato direto entre destinatário e
+entregador não é exposto: a loja atua como
 intermediária no fluxo de envio, recebimento e entrega, preservando os dados
 pessoais das partes.
 

@@ -19,7 +19,7 @@ projeto.
 | RF06 | O sistema deve exibir o trajeto em mapa ou apenas a estimativa de chegada, conforme configuração do estabelecimento. |
 | RF07 | O sistema deve apresentar dashboards com total de entregas, tempo médio e distâncias. |
 | RF08 | O destinatário deve poder avaliar o entregador ao final da entrega. |
-| RF09 | O sistema deve oferecer um canal de comunicação para contingências, intermediado pelo estabelecimento. |
+| RF09 | O sistema deve oferecer um canal de comunicação para contingências pelo WhatsApp (Cloud API da Meta), intermediado pelo estabelecimento. |
 | RF10 | O sistema deve enviar notificações web sobre o andamento e a estimativa de chegada. |
 | RF11 | O sistema deve isolar os dados de cada estabelecimento (multitenant). |
 

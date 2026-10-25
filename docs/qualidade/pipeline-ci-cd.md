@@ -24,7 +24,7 @@ graph LR
     L[lint<br/>ESLint + Prettier]
     T[typecheck]
     U[testes<br/>unitários + cobertura]
-    E[e2e<br/>migrations, seed, integração,<br/>e2e e Postman]
+    E[e2e<br/>migrations, seed, Postman,<br/>integração e e2e]
     M[migrations<br/>drift do schema]
     S[seguranca<br/>npm audit + dependency review]
   end
@@ -39,7 +39,7 @@ graph LR
 | `lint` | `npm run lint:check` e `npm run format:check` | regra do ESLint ou arquivo fora do Prettier |
 | `typecheck` | `tsc --noEmit` | erro de tipo |
 | `testes` | Jest com cobertura | teste falha ou a cobertura cai mais de 1 ponto em relação à `main` |
-| `e2e` | sobe um Postgres 18 de serviço, aplica migrations, roda o seed, `test:integration`, `test:e2e`, compila a API e roda a coleção do Postman | migrations ou seed falham num banco limpo, ou algum dos testes falha |
+| `e2e` | sobe um Postgres 18 de serviço, aplica migrations, roda o seed, compila a API, roda a coleção do Postman e depois `test:integration` e `test:e2e` | migrations ou seed falham num banco limpo, ou algum teste de integração ou e2e falha; a coleção do Postman só entra no relatório |
 | `migrations` | `prisma migrate diff` entre o schema e as migrations | `schema.prisma` mudou sem migration |
 | `seguranca` | `npm audit --omit=dev --audit-level=high` e dependency review no PR | vulnerabilidade alta em dependência de produção, ou dependência nova com vulnerabilidade ou licença GPL/AGPL |
 | `imagem` | build do `Dockerfile` e varredura com Trivy | vulnerabilidade `CRITICAL` corrigível na imagem |

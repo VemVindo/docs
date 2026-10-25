@@ -247,7 +247,7 @@ Os detalhes do pipeline estão em [Pipeline de CI/CD](../qualidade/pipeline-ci-c
 
 O modelo entidade-relacionamento abaixo é a referência da estrutura do banco.
 
-![Modelo entidade-relacionamento do VemVindo](/img/MER.png)
+![Modelo entidade-relacionamento do VemVindo](/img/merv2.png)
 
 Pontos que orientam a implementação:
 

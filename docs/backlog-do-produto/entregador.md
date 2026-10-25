@@ -90,8 +90,8 @@ Histórias de usuário da persona que executa as entregas, organizadas conforme 
 
 ### US07 — WhatsApp: Estabelecimento com Entregador
 
-O chat interno em tempo real foi substituído pela integração com o WhatsApp
-(Cloud API da Meta). Esta história foi fundida com a
+O chat interno em tempo real foi substituído pelo WhatsApp. Esta história foi
+fundida com a
 [US20 da empresa](./empresa-cliente.md#us20--whatsapp-estabelecimento-com-entregador)
 e é tratada como um item único, com os mesmos critérios de aceitação.
 
@@ -101,12 +101,15 @@ relacionados à entrega.
 
 **Critérios de aceite:**
 
-- A conversa é vinculada ao pedido em andamento e ao entregador responsável; apenas eles e o estabelecimento têm acesso.
-- O entregador usa o próprio WhatsApp; o estabelecimento envia e recebe pela plataforma.
-- Atribuição e reatribuição de pedidos podem notificar o entregador por mensagem modelo.
-- Cada mensagem registra autor, conteúdo e data/hora; mensagens não lidas são sinalizadas ao estabelecimento.
-- O sistema informa quando uma mensagem não pôde ser entregue.
-- O histórico é deletado após a conclusão da entrega.
+- O entregador abre a conversa pela tela da entrega, só com o pedido `EM_ANDAMENTO` e atribuído a ele.
+- O link abre o WhatsApp com o telefone do estabelecimento e uma mensagem inicial com o nome do entregador e o número do pedido.
+- Nenhuma mensagem é guardada na plataforma.
+
+:::info Mudança na implementação
+O backlog previa a Cloud API da Meta, com histórico, notificação na atribuição e
+aviso de mensagem não entregue. A entrega usa links `wa.me`. Ver
+[Integração e segurança](../arquitetura/integracao-e-seguranca.md#whatsapp).
+:::
 
 ---
 

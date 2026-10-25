@@ -282,27 +282,36 @@ agregados dos recebedores **para que** eu entenda a percepção geral do atendim
 
 ## Comunicação via WhatsApp
 
-O chat interno em tempo real foi substituído pela integração com o WhatsApp, via
-WhatsApp Business Platform (Cloud API da Meta). A plataforma continua
-intermediando a conversa: nenhum contato pessoal é exposto entre recebedor e
-entregador. A US20 foi fundida com a US07 do entregador, porque as duas
-descrevem a mesma conversa.
+O chat interno em tempo real foi substituído pelo WhatsApp. A US20 foi fundida
+com a US07 do entregador, porque as duas descrevem a mesma conversa.
+
+:::info Mudança na implementação
+O backlog previa a WhatsApp Business Platform (Cloud API da Meta), com mensagens
+passando pela plataforma. A entrega usa links `wa.me`: a plataforma monta o link
+com o telefone da outra parte e uma mensagem inicial, e a conversa acontece no
+WhatsApp de cada um. Os critérios abaixo são os implementados; os previstos e
+não entregues estão listados ao fim de cada história. Detalhes em
+[Integração e segurança](../arquitetura/integracao-e-seguranca.md#whatsapp).
+:::
 
 ### US19 — WhatsApp: Estabelecimento com Recebedor
 
 **Como** dono do estabelecimento, **quero** conversar com o recebedor pelo
 WhatsApp **para que** eu esclareça dúvidas sobre a entrega no canal que ele já
-usa, sem expor contatos pessoais.
+usa.
 
 **Critérios de aceitação:**
 
-- Mensagens enviadas e recebidas pelo número WhatsApp Business da plataforma (Cloud API da Meta).
-- Ao criar o pedido, o recebedor recebe uma mensagem modelo aprovada com o link de rastreamento da US01 do recebedor. *(novo, validar com o demandante)*
-- A conversa é vinculada a um pedido; mensagens recebidas pelo webhook são associadas ao pedido ativo do telefone do recebedor.
-- O estabelecimento lê e responde pela plataforma, com indicação de não lidas.
-- Cada mensagem registra autor, conteúdo, data/hora e situação de envio (enviada, entregue, lida, falhou).
-- Fora da janela de 24h da Meta, só mensagens modelo aprovadas são enviadas; a interface informa essa restrição.
-- O histórico é deletado após a conclusão da entrega.
+- O estabelecimento abre a conversa a partir do pedido, enquanto ele está `PENDENTE` ou `EM_ANDAMENTO`; fora disso, a API responde 409.
+- O link abre o WhatsApp com o telefone do recebedor e uma mensagem inicial com o nome do estabelecimento e o número do pedido.
+- O recebedor abre a conversa com o estabelecimento pela página de rastreio, enquanto a entrega estiver aberta.
+- Telefone que não forma um número válido é recusado (422).
+- Só o estabelecimento dono do pedido gera o link; pedido de outra empresa responde 404.
+- Nenhuma mensagem é guardada na plataforma.
+
+**Previsto e não entregue:** envio pelo número da plataforma, mensagem modelo
+com o link de rastreio na criação do pedido, histórico com situação de envio e
+indicação de não lidas.
 
 ### US20 — WhatsApp: Estabelecimento com Entregador
 
@@ -314,9 +323,12 @@ rapidamente.
 
 **Critérios de aceitação:**
 
-- A conversa é vinculada ao pedido em andamento e ao entregador responsável; apenas eles e o estabelecimento têm acesso.
-- O entregador usa o próprio WhatsApp; o estabelecimento envia e recebe pela plataforma.
-- Atribuição e reatribuição (US08 e US11) podem notificar o entregador por mensagem modelo.
-- Cada mensagem registra autor, conteúdo e data/hora; mensagens não lidas são sinalizadas ao estabelecimento.
-- O sistema informa quando uma mensagem não pôde ser entregue.
-- O histórico é deletado após a conclusão da entrega.
+- A conversa fica disponível só com o pedido `EM_ANDAMENTO`, para o estabelecimento dono do pedido e para o entregador atribuído a ele.
+- O link abre o WhatsApp com o telefone da outra parte e uma mensagem inicial com os nomes e o número do pedido.
+- Depois de uma reatribuição (US11), o link passa a apontar para o novo entregador.
+- O entregador nunca recebe o telefone do recebedor, e o recebedor nunca recebe o do entregador.
+- Nenhuma mensagem é guardada na plataforma.
+
+**Previsto e não entregue:** notificação automática do entregador na atribuição
+por mensagem modelo, histórico, aviso de mensagem não entregue e indicação de
+não lidas.

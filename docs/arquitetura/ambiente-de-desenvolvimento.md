@@ -5,31 +5,25 @@ title: Ambiente de desenvolvimento
 
 # Ambiente de desenvolvimento
 
-Esta página descreve como rodar o projeto localmente para desenvolvimento: os
-pré-requisitos, o passo a passo para subir tudo do zero, e como funcionam os
-containers, o banco de dados, o Prisma, a autenticação e a conexão entre
-frontend e backend.
+Como rodar o projeto localmente, do clone até os testes.
 
 ## Pré-requisitos
 
 - Docker (29 ou superior) e Docker Compose (v5 ou superior).
 - Git.
-
-Não é preciso ter Node instalado no host: dependências, geração do Prisma Client
-e migrations rodam dentro dos containers.
+- Node 24, só para rodar testes, lint e Prettier fora dos containers.
 
 ## Repositórios e portas
 
 | Repositório | Stack | Porta local |
 |---|---|---|
-| `frontend` | Next.js | 3000 |
-| `backend` | NestJS | 8000 (publicada; o container escuta na 3000) |
+| `frontend` | Next.js 16 | 3000 |
+| `backend` | NestJS 11 | 8000 (publicada; o container escuta na 3000) |
 | Postgres local | postgres:18-alpine | 5432 |
 
 O backend publica a porta 8000 no host para não colidir com o frontend na 3000.
-Dentro da rede do Compose o Nest continua escutando na 3000.
 
-## Rodando o projeto do zero
+## Rodando do zero
 
 ### Backend
 
@@ -39,30 +33,26 @@ cd backend
 docker compose up --build
 ```
 
-Esse único comando:
+O `CMD` do `Dockerfile.dev` executa, em ordem:
 
-1. sobe o Postgres local (serviço `database`) e espera o healthcheck passar;
-2. gera o Prisma Client;
-3. aplica as migrations no banco;
-4. inicia o NestJS em modo dev.
+1. `prisma generate`;
+2. `prisma migrate deploy`;
+3. `prisma db execute --file prisma/seed/dev.sql`, com os dados de teste;
+4. `npm run start:dev`.
 
-Os passos 2 a 4 ficam no entrypoint de desenvolvimento
-(`docker-entrypoint.dev.sh`), então um clone limpo sobe sem passos manuais.
-
-Quando o log mostrar `Nest application successfully started`, valide a conexão
-com o banco:
+Se um passo falhar, os seguintes não rodam. Quando o log mostrar
+`Nest application successfully started`:
 
 ```bash
 curl http://localhost:8000/health/db
 # {"database":"up"}
 ```
 
-O backend não precisa de arquivo `.env` em desenvolvimento: as variáveis do
-serviço `nestjs-dev` já estão no `compose.yaml`.
+O backend não precisa de `.env` em desenvolvimento: as variáveis do serviço
+`nestjs-dev` estão no `compose.yaml`. A única opcional é
+`GOOGLE_MAPS_SERVER_KEY`, lida do ambiente do host.
 
 ### Frontend
-
-Em outro terminal:
 
 ```bash
 git clone git@github.com:VemVindo/frontend.git
@@ -70,165 +60,149 @@ cd frontend
 docker compose up --build
 ```
 
-O frontend fica em `http://localhost:3000` e já aponta para o backend em
-`http://localhost:8000` (variável `NEXT_PUBLIC_API_URL` no `compose.yaml`).
+O frontend fica em `http://localhost:3000` e aponta para o backend em
+`http://localhost:8000`.
 
 ### Parar o ambiente
 
 ```bash
-docker compose down      # para os containers, preserva o banco (volume pgdata)
-docker compose down -v   # para os containers e apaga o banco local
+docker compose down      # para os containers e preserva o banco (volume pgdata)
+docker compose down -v   # apaga também o banco local
 ```
+
+## Dados de teste
+
+O seed (`backend/prisma/seed/dev.sql`) é idempotente e só roda em
+desenvolvimento. Todos os dados são fictícios: CPFs e CNPJ gerados pelo
+algoritmo e e-mails no domínio reservado `example.com`.
+
+| Persona | Login | Senha | Situação |
+|---|---|---|---|
+| Empresa (CNPJ) | `cantina@example.com` | `Vemvindo@123` | frota: Bruno; convite pendente para a Ana |
+| Empresa (CPF) | `padaria@example.com` | `Vemvindo@123` | frota: Carla; convite pendente para o Bruno |
+| Entregador | `12345678909` (Ana) | `Temp@2026` | primeiro acesso: troca de senha e convite da Cantina |
+| Entregador | `98765432100` (Bruno) | `Vemvindo@123` | ativo na Cantina, convite pendente da Padaria |
+| Entregador | `24681357928` (Carla) | `Vemvindo@123` | bicicleta, sem placa |
+
+Pedidos, inseridos só com a tabela vazia:
+
+- Cantina: dois `PENDENTE` sem entregador e um `FINALIZADO` pelo Bruno.
+- Padaria: um `EM_ANDAMENTO` com a Carla, que por isso começa indisponível, e um
+  `FINALIZADO` pela Carla.
+
+Para voltar ao estado inicial (por exemplo, refazer o primeiro acesso da Ana),
+use `docker compose down -v && docker compose up`.
 
 ## Orquestração com Docker Compose
 
-Cada repositório tem seu próprio `compose.yaml`, com serviços separados por
-objetivo:
+Cada repositório tem seu `compose.yaml`:
 
-- `nestjs-dev` / `nextjs-dev`: ambiente de desenvolvimento com hot reload. Sobem
-  no `docker compose up` padrão.
-- `nestjs-prod` / `nextjs-prod`: imagens de produção. Ficam sob o profile `prod`
-  (`docker compose --profile prod up`), fora do `up` padrão para evitar colisão
-  de porta com os serviços de dev.
-- `database`: Postgres local, presente apenas no `compose.yaml` do backend.
+- `nestjs-dev` e `nextjs-dev`: desenvolvimento com hot reload, no `up` padrão.
+- `nestjs-prod` e `nextjs-prod`: imagens de produção, no profile `prod`
+  (`docker compose --profile prod up`).
+- `database`: Postgres local, só no compose do backend, com volume `pgdata`.
 
-O banco nunca faz parte da imagem de nenhum app. Em dev ele é um serviço à parte
-com volume nomeado (`pgdata`), de forma que os dados sobrevivem a `up`/`down` dos
-containers de aplicação.
+O banco nunca faz parte da imagem de um app.
 
-## Hot reload
+### Hot reload
 
-O backend usa Compose Watch com `sync+restart` e o frontend com `sync`. Para que
-alterações de código reflitam no container em execução, use:
+O backend usa Compose Watch com `sync+restart` e o frontend com `sync`:
 
 ```bash
 docker compose watch
 ```
 
-Com `docker compose up -d` sem o `watch`, o código fica selado na imagem e
-mudanças locais só aparecem após rebuild (`docker compose up --build`).
+Com `docker compose up -d` sem `watch`, o código fica selado na imagem e só muda
+com `docker compose up --build`.
 
 ## Banco de dados e Prisma
 
-O ORM é o Prisma 7 com driver adapter (`@prisma/adapter-pg`). O schema fica em
-`backend/prisma/schema.prisma` e as tabelas de domínio (`Empresa`, `Entregador`,
-`Pedido`, `Avaliacao`, entre outras) são criadas por migrations versionadas em
-`backend/prisma/migrations`.
+Prisma 7 com driver adapter (`@prisma/adapter-pg`). O schema fica em
+`backend/prisma/schema.prisma` e as migrations em `backend/prisma/migrations`.
+O client é gerado em `backend/src/generated`, fora do versionamento.
 
-Duas variáveis de conexão são usadas:
-
-- `DATABASE_URL`: conexão de runtime da aplicação.
-- `DIRECT_URL`: conexão direta usada pela geração e pelas migrations do Prisma.
-
-Em dev local as duas apontam para o serviço `database` do Compose. Em produção
-apontam para o Postgres gerenciado (Supabase), com as credenciais vindas de um
-`.env` não versionado (use o `.env.example` como base).
-
-### Geração do client e migrations
-
-Em desenvolvimento, a geração do Prisma Client e o `prisma migrate deploy` rodam
-automaticamente no boot do container (entrypoint), então subir o ambiente já
-deixa o banco no schema correto. O Prisma Client é gerado em
-`backend/src/generated` (fora do versionamento).
-
-### Alterando o schema
-
-Ao mudar `schema.prisma`, crie uma nova migration por dentro do container:
+Ao mudar o schema, crie a migration por dentro do container:
 
 ```bash
 docker compose exec nestjs-dev npx prisma migrate dev --name descricao_da_mudanca
 ```
 
-A migration gerada passa a ser aplicada automaticamente nos próximos boots.
-
-## Autenticação
-
-O estabelecimento (`Empresa`) se cadastra sozinho; o entregador não se cadastra:
-quem o cadastra é o estabelecimento, que recebe uma senha temporária para
-repassar. O login é separado por persona e o papel do usuário viaja no JWT.
-
-| Método | Rota | Perfil | Corpo | Resposta |
-|---|---|---|---|---|
-| POST | `/auth/register` | público | dados do estabelecimento | `accessToken` + usuário |
-| POST | `/auth/login/empresa` | público | `email`, `senha` | `accessToken` + usuário |
-| POST | `/auth/login/entregador` | público | `cpf`, `senha` | `accessToken` + usuário (com `senhaTemporaria`) |
-| GET | `/auth/me` | autenticado | — | usuário do token |
-| POST | `/auth/entregador/trocar-senha` | entregador | `senhaAtual`, `novaSenha` | confirmação |
-| POST | `/entregadores` | estabelecimento | dados do entregador | entregador criado + `senhaTemporaria` |
-| POST | `/entregadores/vinculo` | estabelecimento | `cpf` | entregador + `vinculado` |
-| GET | `/entregadores` | estabelecimento | — | frota do estabelecimento |
-
-Todas as rotas são protegidas por padrão por um guard JWT global; as rotas
-públicas são marcadas explicitamente. Um guard de papéis restringe cada rota ao
-perfil correto (por exemplo, só o `ESTABELECIMENTO` cadastra e lista entregadores).
-
-Regras de negócio do cadastro de estabelecimento:
-
-- é obrigatório informar `cnpj` ou `cpf`; sem nenhum dos dois o cadastro é
-  rejeitado;
-- quando o documento é CNPJ, a `razaoSocial` passa a ser obrigatória;
-- e-mail e documento já usados retornam conflito (409);
-- a senha tem no mínimo 8 caracteres e é armazenada com hash bcrypt.
-
-Cadastro e primeiro acesso do entregador:
-
-- o CPF é o identificador do entregador (chave primária da tabela `Entregador`);
-  o entregador não tem id interno, e as tabelas que o referenciam usam a coluna
-  `cpf_entregador`, mantida separada do CNPJ/CPF do estabelecimento;
-- cadastro e vínculo são rotas distintas. `POST /entregadores` cria um entregador
-  novo (nome, CPF, telefone, tipo de veículo e placa quando aplicável) e já o
-  vincula à frota de quem cadastrou (o vínculo é um registro na tabela
-  `contratos`); se o CPF já existir na plataforma, o cadastro é recusado com
-  conflito (409);
-- `POST /entregadores/vinculo` recebe apenas o `cpf` e vincula um entregador que
-  já existe a este estabelecimento, sem exigir o restante dos dados (um mesmo
-  entregador pode servir a várias empresas); CPF inexistente retorna 404 e um
-  vínculo já ativo neste estabelecimento retorna 409;
-- a senha temporária é gerada apenas quando o entregador é criado, retornada uma
-  única vez para o estabelecimento repassar;
-- no primeiro login o entregador vem com `senhaTemporaria: true` e deve trocar a
-  senha em `/auth/entregador/trocar-senha`; após a troca a senha temporária
-  deixa de valer.
-
-O login valida a senha com bcrypt e, em caso de sucesso, assina um JWT contendo o
-`sub` e o `role` (`ESTABELECIMENTO` ou `ENTREGADOR`). O `sub` do entregador é o
-seu CPF; o do estabelecimento é o id da empresa. Para o estabelecimento o token
-carrega ainda o `establishmentId`, usado para isolar os dados por estabelecimento;
-o entregador não é preso a uma única empresa, então seu token não carrega esse
-campo.
-
-As rotas de autenticação vivem na branch `feat/auth`; na branch de infra o
-backend expõe apenas `/` e `/health/db`.
-
-## Healthcheck da aplicação
-
-O backend expõe `GET /health/db`, que executa `SELECT 1` no banco e retorna
-`{ "database": "up" }`. O frontend usa essa rota para exibir o status da conexão.
+O CI recusa um `schema.prisma` alterado sem migration (job de drift, ver
+[Pipeline de CI/CD](../qualidade/pipeline-ci-cd.md)).
 
 ## Conexão frontend e backend
 
-O browser roda no host, então o frontend fala com o backend pela porta publicada
-(8000). A URL é injetada em build time pela variável `NEXT_PUBLIC_API_URL`
-(`http://localhost:8000`), seguindo a convenção do Next para variáveis expostas ao
-navegador.
+O navegador fala com o backend pela porta publicada. A URL entra no build pela
+variável `NEXT_PUBLIC_API_URL`. Todas as chamadas ficam em
+`frontend/app/lib/api.ts` e usam `credentials: 'include'`, porque a sessão é um
+cookie `httpOnly` (ver [Integração e segurança](./integracao-e-seguranca.md)).
+O CORS do backend libera só a origem de `CORS_ORIGIN`, com credenciais.
 
-No backend, o CORS é habilitado para a origem do frontend, controlada pela
-variável `CORS_ORIGIN` (default `http://localhost:3000`). As requisições do
-frontend (`checkHealth`, `loginEmpresa`) ficam concentradas em
-`frontend/app/lib/api.ts`.
+O rastreio em tempo real usa Socket.IO no namespace `/rastreio` do mesmo
+endereço da API.
 
 ## Variáveis de ambiente
 
-Nenhum segredo é versionado. Em desenvolvimento, as variáveis já estão nos
-`compose.yaml`; o `.env` só é necessário para apontar a produção ao Supabase.
+Nenhum segredo é versionado. O `backend/.env.example` lista as variáveis com
+comentários. O backend valida o ambiente no boot (`src/config/env.validation.ts`)
+e não sobe com valor inválido.
 
-Backend:
+### Backend
 
-- `DATABASE_URL`, `DIRECT_URL`: conexões do Postgres (runtime, geração e migrations).
-- `JWT_SECRET`, `JWT_EXPIRES_IN`: assinatura e validade do token.
-- `CORS_ORIGIN`: origem permitida para o frontend.
-- `PORT`: porta de escuta (opcional).
+| Variável | Obrigatória | Uso |
+|---|---|---|
+| `DATABASE_URL` | sim | conexão de runtime |
+| `DIRECT_URL` | sim para o Prisma CLI | conexão direta usada em generate e migrations; a aplicação não usa |
+| `DB_POOL_MAX` | não (5) | tamanho do pool de conexões |
+| `JWT_SECRET` | sim | segredo HS256, mínimo de 32 caracteres |
+| `JWT_EXPIRES_IN` | não (`1d`) | validade do token |
+| `CORS_ORIGIN` | não (`http://localhost:3000`) | origem do frontend liberada no CORS |
+| `URL_FRONTEND` | não (vale o `CORS_ORIGIN`) | base do link de rastreio; HTTPS obrigatório em produção |
+| `PORT` | não (3000) | porta de escuta |
+| `TRUST_PROXY` | não | quantos proxies ficam na frente da API (1 no Render), para o limite de tentativas ver o IP real |
+| `COOKIE_SAMESITE` | não (`lax`) | `none` quando front e back ficam em domínios diferentes |
+| `GOOGLE_MAPS_SERVER_KEY` | não | geocodificação e rotas; sem ela, a rota é estimada em linha reta |
 
-Frontend:
+### Frontend
 
-- `NEXT_PUBLIC_API_URL`: URL pública do backend usada pelo navegador.
+| Variável | Uso |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | URL pública do backend |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | chave do Maps JavaScript; sem ela, a tela mostra distância e tempo sem o mapa |
+| `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID` | Map ID exigido pelos marcadores avançados; sem ele, vale o `DEMO_MAP_ID` do Google |
+
+### Produção
+
+O `render.yaml` de cada repositório descreve o serviço no Render. No backend,
+`DATABASE_URL` e `DIRECT_URL` vêm do Postgres gerenciado do próprio Render; os
+segredos (`JWT_SECRET`, `CORS_ORIGIN`, `URL_FRONTEND`, `COOKIE_SAMESITE` e a
+chave do Google) são preenchidos no painel (`sync: false`).
+
+## Testes e verificações locais
+
+### Backend
+
+```bash
+npm run lint:check        # ESLint sem corrigir
+npm run format:check      # Prettier
+npm run typecheck         # tsc --noEmit
+npm test                  # unitários (Jest)
+npm run test:e2e          # e2e com o app Nest em memória
+TEST_DATABASE_URL=postgresql://vemvindo:tppe2026.1@localhost:5432/vemvindo \
+  npm run test:integration  # integração com o Postgres real
+```
+
+O teste de integração cria um schema próprio com nome aleatório, aplica as
+migrations nele e o apaga no fim, então pode rodar contra o banco do compose sem
+mexer nos dados de desenvolvimento. Sem `TEST_DATABASE_URL`, a suíte é pulada.
+
+### Frontend
+
+```bash
+npm run lint
+npm run format:check
+npm run typecheck
+npm test                  # Vitest com Testing Library
+```
+
+Detalhes de cada nível de teste em [Testes](../qualidade/testes.md).

@@ -23,6 +23,12 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
 
+  // Diagramas em blocos ```mermaid nas páginas de arquitetura e qualidade.
+  markdown: {
+    mermaid: true,
+  },
+  themes: ['@docusaurus/theme-mermaid'],
+
   i18n: {
     defaultLocale: 'pt-BR',
     locales: ['pt-BR'],

@@ -38,12 +38,14 @@ acompanhar a qualidade do serviço prestado pela frota.
 
 ## Comunicação via WhatsApp
 
-Canal para tratar situações excepcionais durante uma entrega, integrado ao
-WhatsApp pela WhatsApp Business Platform (Cloud API da Meta). O estabelecimento
-conversa com o recebedor e com o entregador pela plataforma, enquanto eles usam o
-próprio WhatsApp. A plataforma intermedia as mensagens, preservando a privacidade
-das partes envolvidas. Essa integração substituiu o chat interno em tempo real
-previsto inicialmente.
+Canal para tratar situações excepcionais durante uma entrega. A partir do
+pedido, o estabelecimento abre o WhatsApp já com o telefone do recebedor ou do
+entregador e uma mensagem inicial sobre o pedido; o entregador e o recebedor
+fazem o mesmo para falar com o estabelecimento. Entregador e recebedor nunca
+recebem o telefone um do outro. A conversa usa links `wa.me` e acontece no
+WhatsApp de cada um, sem passar pela plataforma. Essa solução substituiu o chat
+interno em tempo real e a integração com a Cloud API da Meta, previstos
+inicialmente.
 
 ## Notificações
 

@@ -16,6 +16,7 @@ integrantes, com carga equilibrada. O calendário dos sprints está em
 - Cada US tem de 1 a 3 responsáveis, com pontos divididos igualmente. 3 responsáveis apenas na E-US14 (Dashboard, 13 pts).
 - **EN-US05 (Emitir alerta de atraso) removida do escopo.**
 - Chat em tempo real (E-US19, E-US20, EN-US07) substituído por integração com WhatsApp. E-US20 e EN-US07 fundidas em um item. Os critérios de aceitação estão no [backlog da empresa](../backlog-do-produto/empresa-cliente.md#comunicação-via-whatsapp).
+- *Nota de 25/10/2026:* na implementação, os links `wa.me` substituíram a Cloud API da Meta. As tarefas de webhook, templates e conta Meta Business abaixo registram o planejamento de 02/10 e não foram executadas. Ver [Situação das histórias](./situacao-das-historias.md).
 - 3 sprints de 1 semana; a reunião semanal (sexta) faz a review do sprint e o planejamento do seguinte.
 - US dependentes podem rodar no mesmo sprint: a dupla fecha o contrato da API (rotas e DTOs) na segunda e back e front avançam em paralelo.
 

@@ -70,10 +70,21 @@ O code freeze é na quinta, 22/10/2026, e a entrega na segunda, 26/10/2026. São
 |---|---|---|
 | Escopo completo em 3 semanas | Alto | 157 pts em 3 sprints. Priorizar o fluxo principal; renegociar US de menor impacto na reunião de 16/10 se o S2 fechar abaixo do planejado. |
 | Muitas dependências no mesmo sprint | Alto | Contrato de API fechado na segunda, mocks no front, integração diária. |
-| Verificação Meta atrasar | Alto | Número de teste da Cloud API; plano B: E-US20 só com mensagens modelo. |
-| Custo/limite da API de mapas | Médio | Decisão no spike do Sprint 1; modo somente ETA da R-US03 como fallback. |
+| Verificação Meta atrasar | Alto | Número de teste da Cloud API; plano B: E-US20 só com mensagens modelo. Desfecho: a conversa foi feita com links `wa.me`, sem Cloud API (ver [Integração e segurança](../arquitetura/integracao-e-seguranca.md#whatsapp)). |
+| Custo/limite da API de mapas | Médio | Decisão no spike do Sprint 1; modo somente ETA da R-US03 como fallback. Desfecho: Google Maps, com rota recalculada só quando necessário e estimativa em linha reta sem chave ou com falha do Google. |
 | Feriado de 12/10 | Médio | Sprint 2 com 4 dias úteis. |
 | Login da empresa sem US própria | Médio | EN-US01 cobre os dois perfis; recomenda-se formalizar uma US. |
+
+## Situação em 25/10
+
+O detalhe por história está em [Situação das histórias](./situacao-das-historias.md).
+
+- O backend tem 30 das 33 histórias do escopo na `main`. E-US06, E-US14 e
+  E-US18 estão em PR aberto (#49, #50 e #48).
+- O frontend tem 27 telas prontas. E-US07 e E-US21 estão em PR aberto (#24 e
+  #34); E-US14 tem tela provisória; E-US06, E-US12 e E-US18 não têm tela.
+- O PR #50 (E-US14) precisa de ajuste antes do merge: a rota de leitura recebe
+  filtros pelo corpo de um `GET`, que navegadores e proxies podem descartar.
 
 ## Definição de pronto
 

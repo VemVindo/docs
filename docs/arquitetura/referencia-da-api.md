@@ -89,6 +89,21 @@ Os corpos e as respostas detalhadas estão nos DTOs de cada módulo
 | PATCH | `/rastreio/:token/avaliacao` | Link | R-US06 |
 | GET | `/avaliacoes?notas=&de=&ate=` | Empresa | E-US17 |
 
+## Dashboard
+
+| Método | Rota | Acesso | História |
+|---|---|---|---|
+| GET | `/dashboard?dataInicio=&dataFinal=` | Empresa | E-US14 |
+
+As duas datas são opcionais e vão na query string, em ISO 8601. O intervalo
+inclui as duas pontas e, sem datas, vale para todos os pedidos da empresa. A
+resposta traz o `idEmpresa`, os totais de
+pedidos por status (`totalPedidos`, `totalPedidosPendentes`,
+`totalPedidosAndamento`, `totalPedidosConcluidos`, `totalPedidosCancelados`),
+`mediaAvaliacoes`, `tempoMedioEntregaMinutos`, `totalDistanciaPercorrida` e
+`relatorioPorEntregador`, com `cpf`, `nome`, `totalPedidosAndamento`,
+`totalPedidosConcluidos` e `valorMedioEntrega` de cada entregador.
+
 ## Remuneração
 
 | Método | Rota | Acesso | História |

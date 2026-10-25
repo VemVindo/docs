@@ -21,10 +21,10 @@ do Postman só informa.
 
 Contagem de 25/10/2026:
 
-- **Backend:** 60 arquivos de teste e 699 casos. Serviços, repositórios
-  (com o Prisma substituído por dublê), DTOs, guards e regras de domínio, como as
-  transições de status do pedido, o cálculo do valor da entrega e a decisão de
-  recalcular a rota.
+- **Backend:** 83 arquivos de teste e 862 casos. Serviços, repositórios
+  (com o Prisma substituído por dublê), controllers, DTOs, guards, decorators e
+  regras de domínio, como as transições de status do pedido, o cálculo do valor
+  da entrega e a decisão de recalcular a rota.
 - **Frontend:** 40 arquivos e 334 casos. Funções de `app/lib`
   (formatação, validação, filtros) e componentes renderizados com Testing
   Library, consultados por papel e rótulo acessível.
@@ -32,7 +32,7 @@ Contagem de 25/10/2026:
 ### Testes parametrizados
 
 Quando a mesma regra vale para várias entradas, o teste usa `it.each` ou
-`describe.each` em vez de repetir o caso. São 48 tabelas no backend e 31 no
+`describe.each` em vez de repetir o caso. São 58 tabelas no backend e 31 no
 frontend. Exemplos:
 
 - `backend/src/pedido/regras/status-pedido.regra.spec.ts`: quais status exigem
@@ -55,8 +55,19 @@ it.each([StatusPedido.EM_ANDAMENTO, StatusPedido.CANCELADO])(
 
 ### Cobertura
 
-O CI compara a cobertura do PR com a do último push verde na `main` e falha se
-ela cair mais de 1 ponto percentual. O relatório sai como comentário no PR.
+No backend os testes unitários cobrem 100% de statements, branches, funções e
+linhas, fora o código gerado pelo Prisma, os `*.module.ts`, o `main.ts` e as
+pastas `test/` de apoio. O
+`coverageThreshold` do `package.json` exige 100 nas quatro métricas, então
+código novo sem teste reprova o `test:ci`.
+
+O CI também compara a cobertura do PR com a do último push verde na `main` e
+falha se ela cair mais de 1 ponto percentual. O relatório sai como comentário
+no PR.
+
+Os helpers compartilhados entre specs ficam em `backend/src/common/test/`, como
+o `contexto-http.ts`, que monta o `ExecutionContext` usado nos testes de guards
+e decorators.
 
 ## Integração
 
@@ -74,6 +85,7 @@ verdade, transações, bloqueios e restrições do PostgreSQL. Cada suíte usa
 |---|---|---|
 | `ganhos.integration-spec.ts` | E-US16 | duas finalizações simultâneas consolidam o ganho uma vez só; falha depois da escrita desfaz tudo; parâmetros trocados depois da atribuição não mudam o ganho; distância desconhecida bloqueia a finalização; a migration preserva pedidos antigos sem inventar ganho |
 | `codigo-do-recebedor.integration-spec.ts` | EN-US06 | cada erro fica gravado com o horário; depois de 5 erros o código bloqueia pelo tempo do bloqueio e a contagem recomeça quando ele passa; gerar outro link troca o token sem zerar código nem tentativas |
+| `desempenho-entregador.integration-spec.ts` | E-US18 | reatribuição e retorno do pedido não duplicam os indicadores; só pedidos `FINALIZADO` da empresa e do período entram, com início inclusivo e fim exclusivo; tempos ausentes ou inconsistentes ficam de fora; distância desconhecida não inventa soma; vínculo ausente ou inativo responde 404; filtros inválidos são recusados |
 | `credencial.integration-spec.ts` | E-US12 | o banco guarda só prefixo e hash da chave; duas gerações ao mesmo tempo deixam uma credencial ativa; rotacionar e revogar desligam a anterior; a chave de uma empresa nunca autentica como outra |
 | `importacao.integration-spec.ts` | E-US12 | o mesmo `idExterno` enviado em paralelo vira um pedido só; o `idEmpresa` do corpo é ignorado; pedido incompleto vira pendência, e completar cria o pedido ou salva o progresso |
 | `senha-temporaria.integration-spec.ts` | EN-US01 | o cadastro grava o hash da senha temporária e o prazo; senha vencida não entra; trocar a senha e sair de todos os aparelhos invalidam os tokens já emitidos |
@@ -156,4 +168,5 @@ A mesma coleção pode ser importada no Postman para explorar a API à mão.
 ## Dados nos testes
 
 Nenhum teste usa dado pessoal real. CPFs e CNPJs são gerados pelo algoritmo de
-dígito verificador, e-mails ficam em `example.com` e telefones são inventados.
+dígito verificador, e-mails usam domínios reservados que não recebem mensagem
+(`example.com`, `.test`, `.exemplo`) e telefones são inventados.

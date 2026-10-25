@@ -33,6 +33,12 @@ brigariam com o Prettier, e o `format:check` confere a formatação à parte.
   contrato de `POST /pedidos` já usado pelo frontend. Renomear exigiria
   migration e mudança no contrato, e ficou fora do escopo.
 - Rotas REST em português e `kebab-case`: `/pedidos/:id/status-disponiveis`.
+- Sem nome em inglês ou abreviado, inclusive em parâmetros, variáveis locais
+  e testes: `transacao` em vez de `tx`, `idContrato` em vez de `id`,
+  `RotaPublica` em vez de `Public`, `CHAVE_CARGOS` em vez de `CARGOS_KEY`,
+  `CriarPedidoDto` em vez de `CriaPedidoReqDto`. Ficam em inglês só os nomes
+  impostos por biblioteca, como `canActivate`, `onModuleInit` e o `validate`
+  do Passport, e as variáveis de ambiente.
 
 ## Organização
 
@@ -49,9 +55,27 @@ brigariam com o Prettier, e o `format:check` confere a formatação à parte.
   (`x.service.spec.ts`, `X.test.tsx`) ou na pasta `test/` do módulo quando
   precisa de dados de apoio. Integração e e2e ficam em `backend/test/`.
 
+## Limites de tamanho e complexidade
+
+O ESLint marca como aviso a função ou o arquivo que passa destes limites:
+
+| Regra | Backend | Frontend |
+|---|---|---|
+| `complexity` (caminhos por função) | 10 | 12 |
+| `max-depth` (blocos aninhados) | 3 | 3 |
+| `max-params` | 4 | 4 |
+| `max-lines-per-function`, sem contar linhas em branco e comentários | 40 | 120 |
+| `max-lines` por arquivo, sem contar linhas em branco | 300 | 300 |
+
+Nos arquivos de teste as duas regras de linhas ficam desligadas. Aviso não
+reprova o CI, e o backend está com zero. Quando um arquivo passa do limite, a
+saída é separar uma responsabilidade em arquivo próprio, sem desligar a regra. Foi o que aconteceu com o pedido e a
+frota (veja abaixo).
+
 ## Clean Code no estado atual
 
-Medido na `main` em 25/10/2026, fora o código gerado pelo Prisma:
+Medido em 25/10/2026 na branch `refactor/clean-code-e-cobertura-testes`, fora
+o código gerado pelo Prisma:
 
 | Indicador | Backend | Frontend |
 |---|---|---|
@@ -63,12 +87,24 @@ Medido na `main` em 25/10/2026, fora o código gerado pelo Prisma:
 Comentários explicam o porquê de uma decisão, como o limite de 72 caracteres da
 senha por causa do bcrypt, e não repetem o que o código já diz.
 
-### Pontos de atenção
+### Responsabilidades separadas
 
-Os maiores arquivos de produção são `pedido.service.ts` (484 linhas) e
-`pedido.repository.ts` (402). Eles concentram atribuição, mudança de status,
-finalização e WhatsApp do pedido. Separar a finalização com ganho (E-US16) e a
-conversa por WhatsApp em services próprios é a próxima refatoração sugerida.
+O `pedido.service.ts` tinha 484 linhas e o `pedido.repository.ts`, 402. A
+refatoração tirou deles o que tinha motivo próprio para mudar:
+
+| Arquivo novo | O que saiu para ele |
+|---|---|
+| `pedido/conversa-do-pedido.service.ts` | link do WhatsApp entre empresa, entregador e recebedor |
+| `pedido/exigencias-do-pedido.ts` | recusa de transição de status não permitida e de código do recebedor errado |
+| `pedido/pedido-bloqueado.ts` | `SELECT ... FOR UPDATE` que trava a linha do pedido dentro da transação |
+| `pedido/regras/alteracao-pedido.regra.ts` | quando o pedido pode mudar de status ou de entregador |
+| `entregador/remocao-da-frota.service.ts` | remover o entregador da frota, devolver os pedidos dele e avisar o mapa |
+| `mapa/trajeto-da-posicao.ts` | cálculo do trajeto a partir da posição do entregador |
+| `integracao/importacao/resultado-da-importacao.ts` | montagem do resultado do lote importado |
+
+Os maiores arquivos de produção agora são `pedido.service.ts` (291 linhas sem
+contar as em branco), `pedido.repository.ts` (288) e `localizacao.service.ts`
+(286), todos abaixo do limite de 300.
 
 ## Commits e PRs
 

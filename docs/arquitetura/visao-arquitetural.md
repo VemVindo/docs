@@ -112,7 +112,7 @@ graph TD
 
 Regras que valem para todos os módulos:
 
-- toda rota é protegida por padrão; as públicas usam `@Public()` e as restritas
+- toda rota é protegida por padrão; as públicas usam `@RotaPublica()` e as restritas
   a um perfil usam `@Cargos(...)`;
 - o `ValidationPipe` global roda com `whitelist` e `forbidNonWhitelisted`:
   campo fora do DTO derruba a requisição com 400;

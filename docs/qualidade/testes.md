@@ -129,11 +129,11 @@ pedido, chave de integração, token do link, código do recebedor):
 3. **Empresa, frota:** cadastro de entregador com senha temporária, CPF
    repetido, convite por CPF e nova senha temporária.
 4. **Entregador, primeiro acesso:** login com a senha temporária, dados
-   compartilhados, convites, troca de senha com e sem a ciência e aceite do
-   convite.
-5. **Empresa, pedido:** edição do entregador, cadastro, lista, detalhe,
-   atribuição, reatribuição recusada, distância, histórico, rota, WhatsApp e
-   link de rastreio.
+   compartilhados, convites, troca de senha com e sem a ciência, edição do
+   próprio cadastro (com o CPF recusado) e aceite do convite.
+5. **Empresa, pedido:** empresa sem acesso à edição do entregador, cadastro,
+   lista, detalhe, atribuição, reatribuição recusada, distância, histórico,
+   rota, WhatsApp e link de rastreio.
 6. **Empresa, integração:** gerar, verificar, rotacionar e revogar a chave,
    importar um lote e completar a pendência.
 7. **Recebedor, rastreio:** página pública sem o telefone do entregador,

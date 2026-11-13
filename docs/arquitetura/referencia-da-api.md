@@ -41,10 +41,11 @@ Os corpos e as respostas detalhadas estão nos DTOs de cada módulo
 | POST | `/entregadores` | Empresa | E-US04 |
 | POST | `/entregadores/vinculo` | Empresa | E-US04 |
 | GET | `/entregadores` | Empresa | E-US05 |
-| PATCH | `/entregadores` | Empresa | E-US21 |
 | POST | `/entregadores/:cpf/senha-temporaria` | Empresa | E-US04 |
 | DELETE | `/entregadores/:cpf/vinculo` | Empresa | E-US06 |
 | GET | `/entregador/dados-compartilhados` | Entregador | E-US04 |
+| GET | `/entregador/perfil` | Entregador | EN-US08 |
+| PATCH | `/entregador/perfil` | Entregador | EN-US08 |
 | GET | `/entregador/vinculos` | Entregador | E-US04 |
 | POST | `/entregador/vinculos/:id/aceitar` | Entregador | E-US04 |
 | POST | `/entregador/vinculos/:id/recusar` | Entregador | E-US04 |

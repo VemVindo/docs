@@ -127,7 +127,7 @@ Regras que valem para todos os módulos:
 |---|---|---|
 | `auth` | Cadastro da empresa, login das duas personas, troca de senha, sessão | E-US01, EN-US01 |
 | `empresa` | Cadastro editável e configurações (exibir mapa ao recebedor) | E-US02, E-US03 |
-| `entregador` | Frota: cadastro, convite, edição, nova senha temporária, desvínculo | E-US04, E-US05, E-US06, E-US21 |
+| `entregador` | Frota: cadastro, convite, nova senha temporária, desvínculo; perfil editado pelo próprio entregador | E-US04, E-US05, E-US06, EN-US08 |
 | `vinculo` | Lado do entregador: convites, aceite, recusa e saída da frota | E-US04 |
 | `pedido` | Cadastro, listas, atribuição, reatribuição, status, finalização com código, links do WhatsApp | E-US07 a E-US11, E-US13, E-US19, E-US20, EN-US03, EN-US04, EN-US06, EN-US07 |
 | `integracao` | Credencial de API por empresa, importação de pedidos e pendências | E-US12 |

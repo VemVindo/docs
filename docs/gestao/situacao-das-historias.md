@@ -46,7 +46,7 @@ integrado.
 | EN-US05 | Emitir alerta de atraso | removida do escopo | removida do escopo |
 | EN-US06 | Inserir código do recebedor | pronto | pronto |
 | EN-US07 | WhatsApp com o estabelecimento | pronto | pronto |
-| EN-US08 | Editar o próprio cadastro | em desenvolvimento | em desenvolvimento |
+| EN-US08 | Editar o próprio cadastro | PR #65 aberto | PR #44 aberto |
 
 ## Recebedor
 
@@ -63,11 +63,9 @@ integrado.
 
 - 35 histórias numeradas, 1 removida do escopo (EN-US05) e 1 substituída
   (E-US21, pela EN-US08).
-- Backend: 29 prontas, 3 com PR aberto (E-US06, E-US14 e E-US18) e 1 em
-  desenvolvimento (EN-US08).
-- Frontend: 27 prontas, 1 com PR aberto (E-US07), 1 com tela provisória
-  (E-US14), 3 sem tela (E-US06, E-US12 e E-US18) e 1 em desenvolvimento
-  (EN-US08).
+- Backend: 29 prontas e 4 com PR aberto (E-US06, E-US14, E-US18 e EN-US08).
+- Frontend: 27 prontas, 2 com PR aberto (E-US07 e EN-US08), 1 com tela
+  provisória (E-US14) e 3 sem tela (E-US06, E-US12 e E-US18).
 
 ## Mudanças em relação ao backlog
 

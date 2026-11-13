@@ -113,6 +113,32 @@ aviso de mensagem não entregue. A entrega usa links `wa.me`. Ver
 
 ---
 
+## Manter o cadastro
+
+### US08 — Editar o próprio cadastro
+
+**Como** entregador, **quero** editar meus dados de cadastro **para que** as
+empresas com quem trabalho vejam meu contato e meu veículo atualizados.
+
+**Critérios de aceite:**
+
+- Só o próprio entregador edita o cadastro depois de criado. Nenhuma empresa altera esses dados, nem as que têm vínculo ativo com ele.
+- São editáveis: nome, telefone, tipo de veículo e placa. O CPF aparece só para leitura.
+- As alterações passam pelas mesmas validações de formato do cadastro feito pela empresa.
+- A placa é obrigatória para moto e carro. Ao trocar o veículo para bicicleta, a placa é apagada.
+- Enquanto a senha for temporária, o entregador não acessa a tela. Ele troca a senha primeiro.
+- As alterações valem para todas as empresas vinculadas e aparecem na frota de cada uma.
+
+:::info Por que a edição saiu da empresa
+O cadastro do entregador é um só para toda a plataforma. Quando a empresa
+editava, qualquer empresa com vínculo ativo mudava os dados que as outras
+também viam. A
+[US21 da empresa](./empresa-cliente.md#us21--editar-entregador) foi
+substituída por esta história.
+:::
+
+---
+
 ## Removidas do escopo
 
 ### US05 — Emitir alerta de atraso

@@ -90,16 +90,25 @@ vinculados **para que** eu tenha a visão completa da minha frota.
 
 ### US21 — Editar Entregador
 
+:::warning Substituída pela EN-US08
+A empresa não edita mais o cadastro do entregador. O cadastro é um só para
+toda a plataforma, e a edição por uma empresa mudava os dados vistos pelas
+outras. Quem edita agora é o próprio entregador, na
+[US08 do entregador](./entregador.md#us08--editar-o-próprio-cadastro). A
+empresa continua vendo nome, telefone, veículo e placa na frota, só para
+leitura.
+:::
+
 **Como** dono do estabelecimento, **quero** editar os dados de um entregador da
 minha frota **para que** as informações reflitam mudanças de contato ou de veículo.
 
-**Critérios de aceitação:**
+**Critérios de aceitação (versão anterior):**
 
-- A edição é feita nas telas da empresa; o entregador não altera o próprio cadastro, apenas a sua senha de acesso.
-- São editáveis: nome, telefone, tipo de veículo e placa; o CPF é somente-leitura.
-- As alterações passam pelas mesmas validações de formato do cadastro.
-- Apenas entregadores vinculados ao estabelecimento autenticado podem ser editados.
-- Ao salvar, as alterações aparecem na visualização da frota.
+- ~~A edição é feita nas telas da empresa; o entregador não altera o próprio cadastro, apenas a sua senha de acesso.~~
+- ~~São editáveis: nome, telefone, tipo de veículo e placa; o CPF é somente-leitura.~~
+- ~~As alterações passam pelas mesmas validações de formato do cadastro.~~
+- ~~Apenas entregadores vinculados ao estabelecimento autenticado podem ser editados.~~
+- ~~Ao salvar, as alterações aparecem na visualização da frota.~~
 
 ---
 

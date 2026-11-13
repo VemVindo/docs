@@ -6,7 +6,7 @@ title: Situação das histórias
 # Situação das histórias
 
 Estado de cada história na `main` dos repositórios em 25/10/2026, véspera da
-entrega. "PR aberto" quer dizer que o código existe mas ainda não foi revisado e
+entrega, com a EN-US08 acrescentada em 13/11/2026. "PR aberto" quer dizer que o código existe mas ainda não foi revisado e
 integrado.
 
 ## Empresa cliente
@@ -33,7 +33,7 @@ integrado.
 | E-US18 | Desempenho do entregador | PR #48 aberto | sem tela |
 | E-US19 | WhatsApp com o recebedor | pronto | pronto |
 | E-US20 | WhatsApp com o entregador | pronto | pronto |
-| E-US21 | Editar entregador | pronto | PR #34 aberto |
+| E-US21 | Editar entregador | substituída pela EN-US08 | substituída pela EN-US08 |
 
 ## Entregador
 
@@ -46,6 +46,7 @@ integrado.
 | EN-US05 | Emitir alerta de atraso | removida do escopo | removida do escopo |
 | EN-US06 | Inserir código do recebedor | pronto | pronto |
 | EN-US07 | WhatsApp com o estabelecimento | pronto | pronto |
+| EN-US08 | Editar o próprio cadastro | em desenvolvimento | em desenvolvimento |
 
 ## Recebedor
 
@@ -60,10 +61,13 @@ integrado.
 
 ## Resumo
 
-- 34 histórias numeradas, 1 removida do escopo (EN-US05).
-- Backend: 30 prontas e 3 com PR aberto (E-US06, E-US14 e E-US18).
-- Frontend: 27 prontas, 2 com PR aberto (E-US07 e E-US21), 1 com tela
-  provisória (E-US14) e 3 sem tela (E-US06, E-US12 e E-US18).
+- 35 histórias numeradas, 1 removida do escopo (EN-US05) e 1 substituída
+  (E-US21, pela EN-US08).
+- Backend: 29 prontas, 3 com PR aberto (E-US06, E-US14 e E-US18) e 1 em
+  desenvolvimento (EN-US08).
+- Frontend: 27 prontas, 1 com PR aberto (E-US07), 1 com tela provisória
+  (E-US14), 3 sem tela (E-US06, E-US12 e E-US18) e 1 em desenvolvimento
+  (EN-US08).
 
 ## Mudanças em relação ao backlog
 
@@ -73,3 +77,7 @@ integrado.
   pendências para pedidos incompletos. A tela para gerar a credencial e
   completar pendências não entrou.
 - **EN-US05:** removida do escopo na versão 3.0 da divisão de histórias (02/10/2026).
+- **E-US21 e EN-US08 (13/11/2026):** a empresa deixou de editar o cadastro do
+  entregador. O cadastro é um só para a plataforma, e a edição por uma empresa
+  mudava os dados que as outras viam. Agora só o próprio entregador edita, pela
+  [EN-US08](../backlog-do-produto/entregador.md#us08--editar-o-próprio-cadastro).
